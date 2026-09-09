@@ -1,0 +1,1850 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>閱讀策略 01 · 時間標記與時態演進 (Timeline & Tenses)</title>
+  <style>
+
+    /* ============================================================== */
+    /* 核心變數與字級切換系統 (4-Level Font Scaling)                  */
+    /* ============================================================== */
+    :root {
+      --primary: #0284c7;
+      --primary-dark: #0369a1;
+      --primary-light: #e0f2fe;
+      --accent: #8b5cf6;
+      --accent-light: #ede9fe;
+      --success: #10b981;
+      --success-light: #dcfce7;
+      --warning: #f59e0b;
+      --warning-light: #fef3c7;
+      --danger: #ef4444;
+      --danger-light: #fee2e2;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+
+      /* 字級基準 (A - 100%) */
+      --fs-title: 20px;
+      --fs-h2: 17px;
+      --fs-h3: 15px;
+      --fs-body: 15px;
+      --fs-passage: 16px;
+      --fs-sub: 13px;
+      --fs-pill: 12px;
+      --lh-body: 1.65;
+    }
+
+    body.fs-a-plus {
+      --fs-title: 23px;
+      --fs-h2: 19.5px;
+      --fs-h3: 17px;
+      --fs-body: 17.5px;
+      --fs-passage: 18.5px;
+      --fs-sub: 15px;
+      --fs-pill: 13.5px;
+      --lh-body: 1.6;
+    }
+
+    body.fs-a-2plus {
+      --fs-title: 26px;
+      --fs-h2: 22px;
+      --fs-h3: 19.5px;
+      --fs-body: 20px;
+      --fs-passage: 21px;
+      --fs-sub: 17px;
+      --fs-pill: 15px;
+      --lh-body: 1.55;
+    }
+
+    body.fs-a-3plus {
+      --fs-title: 30px;
+      --fs-h2: 25.5px;
+      --fs-h3: 22.5px;
+      --fs-body: 23px;
+      --fs-passage: 24.5px;
+      --fs-sub: 19px;
+      --fs-pill: 17px;
+      --lh-body: 1.5;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans TC", sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+      line-height: var(--lh-body);
+      font-size: var(--fs-body);
+      padding-bottom: 90px;
+    }
+
+    /* 頂部 Sticky 導覽列 */
+    .top-header {
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .header-content {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 10px 16px 8px;
+    }
+
+    body.mode-desktop .header-content,
+    body.mode-desktop .app-container {
+      max-width: 900px;
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .school-badge {
+      font-size: var(--fs-pill);
+      font-weight: 700;
+      color: var(--primary);
+      background: var(--primary-light);
+      padding: 2px 8px;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .app-title {
+      font-size: var(--fs-title);
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .toolbar-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tool-group {
+      display: flex;
+      gap: 4px;
+      background: #f1f5f9;
+      padding: 2px;
+      border-radius: 8px;
+    }
+
+    .tool-btn {
+      border: none;
+      background: transparent;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: var(--fs-pill);
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .tool-btn.active {
+      background: #ffffff;
+      color: var(--primary-dark);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    /* 頂部快速跳轉與目前策略指示 */
+    .active-nav-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+      padding-top: 6px;
+      border-top: 1px dashed var(--border);
+    }
+
+    .active-strategy-indicator {
+      font-size: var(--fs-sub);
+      font-weight: 800;
+      color: var(--primary-dark);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-open-menu {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      border: 1px solid #bae6fd;
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: var(--fs-pill);
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .btn-open-menu:hover {
+      background: #bae6fd;
+    }
+
+    /* 隨視口懸浮查詞 HUD */
+    .floating-hud {
+      position: fixed;
+      top: 56px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 32px);
+      max-width: 650px;
+      z-index: 950;
+      background: #ffffff;
+      border: 2px solid var(--primary);
+      border-radius: 12px;
+      box-shadow: var(--shadow-lg);
+      padding: 10px 14px;
+      display: none;
+      animation: hudSlideDown 0.2s ease-out;
+    }
+
+    @keyframes hudSlideDown {
+      from { opacity: 0; transform: translate(-50%, -10px); }
+      to { opacity: 1; transform: translate(-50%, 0); }
+    }
+
+    .floating-hud.show {
+      display: block;
+    }
+
+    .hud-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .hud-word-info {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .hud-word {
+      font-size: 17px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .hud-pos {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary);
+      background: var(--primary-light);
+      padding: 1px 6px;
+      border-radius: 4px;
+    }
+
+    .hud-meaning {
+      font-size: 15px;
+      font-weight: 700;
+      color: #334155;
+    }
+
+    .hud-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .hud-btn {
+      background: #f1f5f9;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.15s;
+    }
+
+    .hud-btn:hover {
+      background: #e2e8f0;
+    }
+
+    /* 底端懸浮說明視窗 (Floating Clue Popover) */
+    .clue-popover {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 32px);
+      max-width: 650px;
+      z-index: 950;
+      background: #ffffff;
+      border: 2px solid var(--accent);
+      border-radius: 14px;
+      box-shadow: 0 12px 30px rgba(139, 92, 246, 0.25);
+      padding: 14px 16px;
+      display: none;
+      animation: popoverSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes popoverSlideUp {
+      from { opacity: 0; transform: translate(-50%, 20px); }
+      to { opacity: 1; transform: translate(-50%, 0); }
+    }
+
+    .clue-popover.show {
+      display: block;
+    }
+
+    .popover-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .popover-tag {
+      font-size: var(--fs-pill);
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 20px;
+      color: #ffffff;
+      background: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .popover-tag.tag-timeline { background: #8b5cf6; }
+    .popover-tag.tag-topic { background: #0284c7; }
+    .popover-tag.tag-details { background: #d97706; }
+    .popover-tag.tag-transitions { background: #059669; }
+    .popover-tag.tag-conclusion { background: #db2777; }
+
+    .popover-desc {
+      font-size: var(--fs-body);
+      font-weight: 600;
+      color: #1e293b;
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+
+    .popover-zh {
+      font-size: var(--fs-body);
+      color: #475569;
+      background: #f8fafc;
+      padding: 8px 10px;
+      border-left: 3px solid var(--accent);
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+
+    .popover-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .popover-action-btn {
+      border: 1px solid var(--border);
+      background: #ffffff;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: var(--fs-pill);
+      font-weight: 700;
+      color: #334155;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .popover-action-btn:hover {
+      background: #f1f5f9;
+    }
+
+    /* 主容器 */
+    .app-container {
+      max-width: 680px;
+      margin: 16px auto;
+      padding: 0 16px;
+    }
+
+    /* ============================================================== */
+    /* 需求 1：垂直堆疊策略選單 (Vertical Stacked Menu Cards)         */
+    /* ============================================================== */
+    .strategy-menu-section {
+      background: #ffffff;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      padding: 16px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .menu-header-title {
+      font-size: var(--fs-h2);
+      font-weight: 800;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--primary-light);
+    }
+
+    .menu-cards-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .menu-card {
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      cursor: pointer;
+      background: #ffffff;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      text-align: left;
+    }
+
+    .menu-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--primary);
+    }
+
+    .menu-card.active {
+      border-color: var(--primary);
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.15);
+    }
+
+    .menu-card-content h3 {
+      font-size: var(--fs-h3);
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .menu-card-content p {
+      font-size: var(--fs-sub);
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .menu-card-arrow {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--primary);
+      margin-left: 12px;
+      flex-shrink: 0;
+    }
+
+    /* 獨立策略頁面視圖 (Isolated Page Views) */
+    .skill-view {
+      display: none;
+    }
+
+    .skill-view.active {
+      display: block;
+      animation: fadeIn 0.25s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* 策略深入剖析引導卡 (Strategy Deep-Dive Guide) */
+    .strategy-guide-card {
+      background: #ffffff;
+      border-radius: 16px;
+      border: 2px solid #e0f2fe;
+      padding: 18px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .guide-badge-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .guide-tag {
+      font-size: var(--fs-pill);
+      font-weight: 800;
+      color: #ffffff;
+      background: var(--primary);
+      padding: 3px 10px;
+      border-radius: 12px;
+    }
+
+    .guide-title {
+      font-size: var(--fs-h2);
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 10px;
+    }
+
+    .guide-body {
+      font-size: var(--fs-body);
+      color: #334155;
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+
+    .guide-mantra {
+      background: #f8fafc;
+      border-left: 4px solid var(--primary);
+      border-radius: 0 8px 8px 0;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+    }
+
+    .guide-mantra-title {
+      font-size: var(--fs-sub);
+      font-weight: 800;
+      color: var(--primary-dark);
+      margin-bottom: 4px;
+    }
+
+    .guide-signals-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .signal-pill {
+      font-size: var(--fs-pill);
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      color: #0f172a;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+    }
+
+    .signal-pill:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* ============================================================== */
+    /* 需求 6：技巧02 漢堡段落架構圖 (Hamburger Paragraph Model)       */
+    /* ============================================================== */
+    .hamburger-container {
+      background: linear-gradient(135deg, #fef3c7 0%, #fffbeb 100%);
+      border: 2px solid #f59e0b;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .hamburger-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .hamburger-title {
+      font-size: var(--fs-h2);
+      font-weight: 800;
+      color: #92400e;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hamburger-layers {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .burger-layer {
+      border-radius: 10px;
+      padding: 10px 14px;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid transparent;
+    }
+
+    .burger-layer:hover {
+      transform: scale(1.015);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* 頂層麵包：主題句 */
+    .layer-top-bun {
+      background: #d97706;
+      color: #ffffff;
+      border-radius: 16px 16px 6px 6px;
+    }
+
+    /* 餡料：支持細節 */
+    .layer-fillings {
+      background: #10b981;
+      color: #ffffff;
+      border-radius: 6px;
+    }
+
+    .layer-meat {
+      background: #b45309;
+      color: #ffffff;
+      border-radius: 6px;
+    }
+
+    /* 底層麵包：結論句 */
+    .layer-bottom-bun {
+      background: #d97706;
+      color: #ffffff;
+      border-radius: 6px 6px 16px 16px;
+    }
+
+    .layer-info h4 {
+      font-size: var(--fs-h3);
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .layer-info p {
+      font-size: var(--fs-sub);
+      opacity: 0.92;
+      line-height: 1.35;
+      margin-top: 2px;
+    }
+
+    .layer-target {
+      font-size: var(--fs-pill);
+      font-weight: 800;
+      background: rgba(255, 255, 255, 0.25);
+      padding: 3px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+      margin-left: 8px;
+    }
+
+    /* ============================================================== */
+    /* 需求 4：空中美語雜誌版權與教學使用聲明                         */
+    /* ============================================================== */
+    .copyright-notice {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: var(--fs-sub);
+      color: #475569;
+      line-height: 1.5;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .copyright-icon {
+      font-size: 16px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* 示範文章容器 (Continuous Prose Passage Card) */
+    .passage-card {
+      background: #ffffff;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      padding: 18px 20px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .passage-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .passage-title-group h2 {
+      font-size: var(--fs-h2);
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .passage-title-group .passage-subtitle {
+      font-size: var(--fs-sub);
+      color: var(--text-muted);
+    }
+
+    .clue-toggle-btn {
+      border: 2px solid var(--border);
+      background: #f8fafc;
+      color: var(--text-main);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: var(--fs-pill);
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .clue-toggle-btn.active {
+      background: #eff6ff;
+      border-color: var(--primary);
+      color: var(--primary-dark);
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.15);
+    }
+
+    /* 連貫散文段落 (Continuous Prose Paragraphs) */
+    .passage-body {
+      font-size: var(--fs-passage);
+      line-height: 1.85;
+      color: #1e293b;
+    }
+
+    .passage-p {
+      margin-bottom: 16px;
+      text-align: justify;
+    }
+
+    /* ============================================================== */
+    /* 需求 5 & 使用者嚴格確認：僅關鍵詞上背景色，句子完全無背景色     */
+    /* ============================================================== */
+    .p-sentence {
+      position: relative;
+      cursor: pointer;
+      transition: border-bottom 0.15s ease, color 0.15s ease;
+      background: transparent !important; /* 嚴格禁止整句上背景色 */
+      border-bottom: none;
+    }
+
+    .p-sentence:hover {
+      color: var(--primary-dark);
+    }
+
+    /* 預設關閉線索時：關鍵詞也無背景色 */
+    .kw-signal {
+      background: transparent !important;
+      border-bottom: none !important;
+      font-weight: inherit;
+      color: inherit;
+    }
+
+    /* 開啟視覺線索時：句子僅上乾淨的精緻虛線底線，依然絕無背景色 */
+    .passage-body.clues-on .clue-timeline {
+      border-bottom: 2px dashed #8b5cf6 !important;
+      background: transparent !important;
+    }
+
+    .passage-body.clues-on .clue-topic {
+      border-bottom: 2.5px solid #0284c7 !important;
+      background: transparent !important;
+    }
+
+    .passage-body.clues-on .clue-details {
+      border-bottom: 2px dashed #d97706 !important;
+      background: transparent !important;
+    }
+
+    .passage-body.clues-on .clue-conclusion {
+      border-bottom: 2.5px dashed #db2777 !important;
+      background: transparent !important;
+    }
+
+    .passage-body.clues-on .clue-transitions {
+      border-bottom: 2px dashed #059669 !important;
+      background: transparent !important;
+    }
+
+    /* ★ 核心：只有關鍵信號詞（如 the 1810s、also、What's more）才享有柔黃背景色 ＋ 實線底線 ★ */
+    .passage-body.clues-on .kw-signal,
+    .tve-passage-text.clues-on .kw-signal {
+      background: #fef08a !important;
+      border-bottom: 2px solid #ca8a04 !important;
+      border-radius: 4px !important;
+      padding: 1px 4px !important;
+      font-weight: 700 !important;
+      color: #713f12 !important;
+    }
+
+    /* 單字點擊查詞 (Tap Word) */
+    .tap-word {
+      cursor: pointer;
+      display: inline-block;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .tap-word:hover {
+      color: var(--primary);
+    }
+
+    .tap-word.active-word {
+      background: #bae6fd !important;
+      border-radius: 3px;
+      color: #0369a1;
+      font-weight: 700;
+    }
+
+    /* 高亮閃爍 (Pulse Glow when jumped to) */
+    .pulse-target {
+      animation: cluePulse 1.8s ease-out;
+    }
+
+    @keyframes cluePulse {
+      0% { text-shadow: 0 0 10px #f59e0b; }
+      50% { text-shadow: 0 0 5px #f59e0b; }
+      100% { text-shadow: none; }
+    }
+
+    /* 中英對照研習抽屜 */
+    .bilingual-drawer {
+      margin-top: 16px;
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+    }
+
+    .drawer-toggle {
+      font-size: var(--fs-sub);
+      font-weight: 800;
+      color: var(--primary-dark);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      list-style: none;
+    }
+
+    .drawer-toggle::-webkit-details-marker {
+      display: none;
+    }
+
+    .bilingual-list {
+      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .bilingual-item {
+      background: #f8fafc;
+      border-radius: 8px;
+      padding: 8px 12px;
+      border-left: 3px solid var(--primary);
+    }
+
+    .bi-en {
+      font-size: var(--fs-body);
+      font-weight: 600;
+      color: #0f172a;
+      margin-bottom: 2px;
+    }
+
+    .bi-zh {
+      font-size: var(--fs-sub);
+      color: #475569;
+    }
+
+    /* ============================================================== */
+    /* 需求 8：統測真題佐證專區 (113 最新年份優先 + 僅關鍵詞背景色)     */
+    /* ============================================================== */
+    .tve-section-card {
+      background: #ffffff;
+      border-radius: 16px;
+      border: 2px solid #bae6fd;
+      padding: 18px 20px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .tve-section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--primary-light);
+    }
+
+    .tve-header-title {
+      font-size: var(--fs-h2);
+      font-weight: 800;
+      color: var(--primary-dark);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tve-proofs-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .tve-proof-box {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      background: #fafafa;
+    }
+
+    .tve-box-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .tve-exam-badge {
+      font-size: var(--fs-pill);
+      font-weight: 800;
+      background: #0284c7;
+      color: #ffffff;
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+
+    .tve-strategy-tag {
+      font-size: var(--fs-pill);
+      font-weight: 700;
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+
+    .tve-passage-text {
+      font-size: var(--fs-passage);
+      line-height: 1.75;
+      color: #1e293b;
+      margin-bottom: 8px;
+    }
+
+    .tve-passage-text.clues-on .p-sentence {
+      border-bottom: 2px dashed #0284c7 !important;
+      background: transparent !important;
+    }
+
+    .tve-analysis-box {
+      background: #ffffff;
+      border-left: 3px solid #0284c7;
+      padding: 8px 10px;
+      border-radius: 0 6px 6px 0;
+      font-size: var(--fs-sub);
+      color: #334155;
+      line-height: 1.5;
+    }
+
+    /* 追加統測真題按鈕控制台 */
+    .tve-append-console {
+      margin-top: 14px;
+      text-align: center;
+    }
+
+    .btn-append-tve {
+      background: #0284c7;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-size: var(--fs-body);
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.2);
+      transition: all 0.15s ease;
+    }
+
+    .btn-append-tve:hover {
+      background: #0369a1;
+      transform: translateY(-1px);
+    }
+
+    /* 測驗練習卡片 (Adaptive Quiz Section) */
+    .quiz-section-card {
+      background: #ffffff;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      padding: 18px 20px;
+      margin-top: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .quiz-title {
+      font-size: var(--fs-h2);
+      font-weight: 800;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .quiz-score-board {
+      font-size: var(--fs-sub);
+      font-weight: 800;
+      color: var(--primary-dark);
+      background: var(--primary-light);
+      padding: 4px 10px;
+      border-radius: 12px;
+    }
+
+    .quiz-items-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .quiz-item-box {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      background: #ffffff;
+    }
+
+    .quiz-stem {
+      font-size: var(--fs-body);
+      font-weight: 700;
+      color: #0f172a;
+      line-height: 1.5;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .stem-tts-btn {
+      background: #f1f5f9;
+      border: none;
+      border-radius: 50%;
+      width: 26px;
+      height: 26px;
+      cursor: pointer;
+      font-size: 13px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .quiz-opt-btn {
+      border: 1.5px solid var(--border);
+      background: #ffffff;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: var(--fs-body);
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      color: #1e293b;
+    }
+
+    .quiz-opt-btn:hover {
+      border-color: var(--primary);
+      background: #f8fafc;
+    }
+
+    .quiz-opt-btn.correct {
+      border-color: #10b981;
+      background: #ecfdf5;
+      color: #065f46;
+      font-weight: 700;
+    }
+
+    .quiz-opt-btn.wrong {
+      border-color: #ef4444;
+      background: #fef2f2;
+      color: #991b1b;
+      font-weight: 700;
+    }
+
+    .quiz-accordion {
+      margin-top: 10px;
+      background: #f8fafc;
+      border-radius: 8px;
+      padding: 10px 12px;
+      border-left: 3px solid var(--primary);
+      display: none;
+    }
+
+    .quiz-accordion.show {
+      display: block;
+    }
+
+    .quiz-acc-title {
+      font-size: var(--fs-sub);
+      font-weight: 800;
+      color: var(--primary-dark);
+      margin-bottom: 4px;
+    }
+
+    .quiz-acc-text {
+      font-size: var(--fs-sub);
+      color: #334155;
+      line-height: 1.5;
+      margin-bottom: 4px;
+    }
+
+    .quiz-acc-zh {
+      font-size: var(--fs-sub);
+      color: #64748b;
+      background: #ffffff;
+      padding: 6px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+  
+
+  </style>
+</head>
+<body>
+
+  <!-- 頂部 Sticky 導覽列 -->
+  <header class="top-header">
+    <div class="header-content">
+      <div class="header-top">
+        <div class="app-title">閱讀策略 01 · 時間標記與時態演進 (Timeline & Tenses)</div>
+      </div>
+      <div class="toolbar-row">
+        <!-- 導航連結 -->
+        <div class="tool-group">
+          <a href="../00_閱讀技巧.html" class="tool-btn" style="text-decoration:none; background:#0284c7; color:#fff; font-weight:700;">🏠 返回策略總覽</a> <a href="../02_主題句與漢堡段落結構/02_主題句與漢堡段落結構.html" class="tool-btn" style="text-decoration:none;">下一策略 ➔</a>
+        </div>
+        <!-- 載具切換 -->
+        <div class="tool-group">
+          <button class="tool-btn active" id="btn-mode-mobile" onclick="setLayoutMode('mobile')">📱 行動版</button>
+          <button class="tool-btn" id="btn-mode-desktop" onclick="setLayoutMode('desktop')">💻 桌機版</button>
+        </div>
+        <!-- 字級切換 -->
+        <div class="tool-group">
+          <button class="tool-btn active" onclick="setFontSize('a')">A</button>
+          <button class="tool-btn" onclick="setFontSize('a-plus')">A+</button>
+          <button class="tool-btn" onclick="setFontSize('a-2plus')">A++</button>
+          <button class="tool-btn" onclick="setFontSize('a-3plus')">A+++</button>
+        </div>
+        <!-- 朗讀語速 -->
+        <div class="tool-group">
+          <button class="tool-btn" onclick="setTtsRate(0.75, this)">0.75x</button>
+          <button class="tool-btn active" onclick="setTtsRate(0.88, this)">0.88x</button>
+          <button class="tool-btn" onclick="setTtsRate(1.0, this)">1.0x</button>
+        </div>
+      </div>
+
+      <!-- 當前閱讀技巧指示列 -->
+      <div class="active-nav-bar">
+        <div class="active-strategy-indicator">
+          <span>⏳ 技巧 #01：時間標記與時態演進</span>
+        </div>
+        <a href="../00_閱讀技巧.html" style="font-size:12px; color:#0284c7; text-decoration:none; font-weight:700;">🏠 返回總覽</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 隨視口懸浮查詞 HUD -->
+  <div class="floating-hud" id="wordHud">
+    <div class="hud-header">
+      <div class="hud-word-info">
+        <span class="hud-word" id="hudWord">word</span>
+        <span class="hud-pos" id="hudPos">pos.</span>
+        <span class="hud-meaning" id="hudMeaning">中文釋義</span>
+      </div>
+      <div class="hud-actions">
+        <button class="hud-btn" onclick="speakCurrentHudWord()" title="重複朗讀發音">🔊</button>
+        <button class="hud-btn" onclick="closeWordHud()" title="關閉視窗">✕</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 底端懸浮說明視窗 (Floating Clue Popover) -->
+  <div class="clue-popover" id="cluePopover">
+    <div class="popover-header">
+      <span class="popover-tag" id="popoverTag">考點標記</span>
+      <button class="hud-btn" onclick="closePopover()" title="關閉">✕</button>
+    </div>
+    <div class="popover-desc" id="popoverDesc">策略深度解構說明</div>
+    <div class="popover-zh" id="popoverZh">【整句中文翻譯】</div>
+    <div class="popover-footer">
+      <button class="popover-action-btn" onclick="speakCurrentPopoverSentence()">🔊 朗讀整句</button>
+    </div>
+  </div>
+
+  <!-- 主畫面容器 -->
+  <main class="app-container">
+    <div class="skill-view active" id="view-strat1">
+            <!-- 需求 3：詳細策略說明先行 -->
+      <section class="strategy-guide-card">
+        <div class="guide-badge-row">
+          <span class="guide-tag">🎯 閱讀核心心法 · 技巧 #01</span>
+          <span style="font-size:12px; color:var(--text-muted);">大考高頻考點：歷史發展題、時間排序題</span>
+        </div>
+        <h3 class="guide-title">歷史年代與時態：解鎖篇章的「時光倒流信號」</h3>
+        <div class="guide-body">
+          當你在英文段落中看到具體的過去年代（如 <span class="signal-pill">the 1810s</span>、<span class="signal-pill">the 1880s</span>）並且動詞多為<strong>一般過去式（Past Simple Tense）</strong>時，這絕非偶然，而是作者在宣告：<strong>本段正在介紹某件事物、技術或文化的歷史起源與演進過程</strong>！
+        </div>
+        <div class="guide-mantra">
+          <div class="guide-mantra-title">⚡ 統測秒殺判讀口訣：</div>
+          <div>看到年代與過去式 ➔ 快速定位事物起點 ➔ 順著時間軸由遠及近 ➔ 題目問「起源、發展順序」秒得答案！</div>
+        </div>
+        <div style="font-size:13px; font-weight:700; color:#334155;">🔑 高頻時間信號詞庫（點擊發音與查詞）：</div>
+        <div class="guide-signals-row">
+          <span class="signal-pill tap-word" onclick="lookupWord('dates')">dates 追溯</span>
+          <span class="signal-pill tap-word" onclick="lookupWord('merchants')">merchants 商人</span>
+          <span class="signal-pill tap-word" onclick="lookupWord('carried')">carried 攜帶</span>
+          <span class="signal-pill tap-word" onclick="lookupWord('began')">began 開始</span>
+          <span class="signal-pill tap-word" onclick="lookupWord('popular')">popular 受歡迎的</span>
+        </div>
+      </section>
+
+      <!-- 需求 4：空中美語雜誌版權與教學使用聲明 -->
+      <div class="copyright-notice">
+        <div class="copyright-icon">📌</div>
+        <div>
+          <strong>教材來源與教學使用聲明</strong>：本示範篇章選自《A+ English 空中美語》2026年9月號 Unit 1「Plan, Create, Remember: The Art of Keeping a Techou」，版權屬於空中美語雜誌社。本文僅作為個人英語教學研究、實習診斷與學生自學練習之用，無任何商業營利用途。
+        </div>
+      </div>
+
+      <!-- 示範篇章實戰印證 (100% 原始雜誌課文第 1 段) -->
+      <section class="passage-card">
+        <div class="passage-header">
+          <div class="passage-title-group">
+            <h2>Unit 1 Plan, Create, Remember: The Art of Keeping a Techou</h2>
+            <div class="passage-subtitle">原始課文第 1 段：手帳的歷史淵源與演進</div>
+          </div>
+          <!-- 需求 2：考點視覺線索預設關閉 -->
+          <button class="clue-toggle-btn" id="btn-toggle-strat1" onclick="toggleClues('strat1')">
+            💡 考點視覺線索：關閉中（點擊開啟）
+          </button>
+        </div>
+
+        <!-- 需求 5：句子僅虛線底線，關鍵字上底線+柔黃背景色 -->
+        <div class="passage-body" id="passage-strat1">
+          <p class="passage-p">
+            <span class="p-sentence clue-timeline" data-clue="t1-1" onclick="openClue('t1-1')"><span class="tap-word">A</span> <span class="tap-word">techou</span> <span class="tap-word">is</span> <span class="tap-word">a</span> <span class="tap-word">small</span> <span class="tap-word">notebook</span> <span class="tap-word">for</span> <span class="tap-word">recording</span> <span class="tap-word">daily</span> <span class="tap-word">life</span>.</span>
+            <span class="p-sentence clue-timeline" data-clue="t1-2" onclick="openClue('t1-2')"><span class="tap-word">It</span> <span class="tap-word">dates</span> <span class="tap-word">back</span> <span class="tap-word">to</span> <span class="kw-signal"><span class="tap-word">the</span> <span class="tap-word">1810s</span></span> <span class="tap-word">in</span> <span class="tap-word">the</span> <span class="tap-word">UK</span>.</span>
+            <span class="p-sentence clue-timeline" data-clue="t1-3" onclick="openClue('t1-3')"><span class="tap-word">At</span> <span class="tap-word">that</span> <span class="tap-word">time</span>, <span class="tap-word">merchants</span> <span class="kw-signal"><span class="tap-word">carried</span></span> <span class="tap-word">small</span> <span class="tap-word">notebooks</span> <span class="tap-word">to</span> <span class="tap-word">record</span> <span class="tap-word">goods</span> <span class="tap-word">in</span> <span class="tap-word">stores</span>.</span>
+            <span class="p-sentence clue-timeline" data-clue="t1-4" onclick="openClue('t1-4')"><span class="tap-word">Around</span> <span class="kw-signal"><span class="tap-word">the</span> <span class="tap-word">1880s</span></span>, <span class="tap-word">people</span> <span class="tap-word">in</span> <span class="tap-word">Japan</span> <span class="kw-signal"><span class="tap-word">began</span></span> <span class="tap-word">to</span> <span class="tap-word">use</span> <span class="tap-word">techou</span> <span class="tap-word">for</span> <span class="tap-word">daily</span> <span class="tap-word">notes</span>.</span>
+            <span class="p-sentence clue-timeline" data-clue="t1-5" onclick="openClue('t1-5')"><span class="tap-word">It</span> <span class="tap-word">soon</span> <span class="kw-signal"><span class="tap-word">became</span></span> <span class="tap-word">popular</span> <span class="tap-word">across</span> <span class="tap-word">Japan</span> <span class="tap-word">and</span> <span class="tap-word">later</span> <span class="tap-word">around</span> <span class="tap-word">the</span> <span class="tap-word">world</span>!</span>
+          </p>
+        </div>
+
+        <!-- 逐句中英對照研習抽屜 -->
+        <details class="bilingual-drawer">
+          <summary class="drawer-toggle">👁️ 展開【第 1 段逐句中英精讀與真人語音】</summary>
+          <div class="bilingual-list">
+            <div class="bilingual-item">
+              <div class="bi-en">A techou is a small notebook for recording daily life. <button class="hud-btn" onclick="speakText('A techou is a small notebook for recording daily life.', 0.9)" style="display:inline-flex; width:22px; height:22px; font-size:11px;">🔊</button></div>
+              <div class="bi-zh">手帳是一本用來記錄日常生活的隨身小筆記本。</div>
+            </div>
+            <div class="bilingual-item">
+              <div class="bi-en">It dates back to the 1810s in the UK. <button class="hud-btn" onclick="speakText('It dates back to the 1810s in the UK.', 0.9)" style="display:inline-flex; width:22px; height:22px; font-size:11px;">🔊</button></div>
+              <div class="bi-zh">它的歷史可追溯至 1810 年代的英國。</div>
+            </div>
+            <div class="bilingual-item">
+              <div class="bi-en">At that time, merchants carried small notebooks to record goods in stores. <button class="hud-btn" onclick="speakText('At that time, merchants carried small notebooks to record goods in stores.', 0.9)" style="display:inline-flex; width:22px; height:22px; font-size:11px;">🔊</button></div>
+              <div class="bi-zh">在當時，商人隨身攜帶小筆記本以記錄店鋪裡的商品庫存。</div>
+            </div>
+            <div class="bilingual-item">
+              <div class="bi-en">Around the 1880s, people in Japan began to use techou for daily notes. <button class="hud-btn" onclick="speakText('Around the 1880s, people in Japan began to use techou for daily notes.', 0.9)" style="display:inline-flex; width:22px; height:22px; font-size:11px;">🔊</button></div>
+              <div class="bi-zh">大約在 1880 年代，日本民眾開始使用手帳做日常筆記。</div>
+            </div>
+            <div class="bilingual-item">
+              <div class="bi-en">It soon became popular across Japan and later around the world! <button class="hud-btn" onclick="speakText('It soon became popular across Japan and later around the world!', 0.9)" style="display:inline-flex; width:22px; height:22px; font-size:11px;">🔊</button></div>
+              <div class="bi-zh">它很快在日本各地風行起來，隨後更風靡全世界！</div>
+            </div>
+          </div>
+        </details>
+      </section>
+
+      <!-- 技巧 01 專屬隨堂測驗 -->
+      <section class="quiz-section-card">
+        <div class="quiz-header">
+          <div class="quiz-title">📝 技巧 #01 專屬實戰測驗</div>
+          <div class="quiz-score-board" id="score-strat1">已答對：0 / 0 題</div>
+        </div>
+        <div class="quiz-items-list" id="quiz-list-strat1">
+          <div class="quiz-item-box" data-qid="q1-1">
+            <div class="quiz-stem">
+              <button class="stem-tts-btn" onclick="speakText('What did merchants in the UK use small notebooks for in the 1810s?', 0.9)">🔊</button>
+              <span>Q1. What did merchants in the UK use small notebooks for in the 1810s?</span>
+            </div>
+            <div class="quiz-options">
+              <button class="quiz-opt-btn" onclick="checkAnswer('strat1', 'q1-1', 0, 3)">A. To practice Japanese</button>
+              <button class="quiz-opt-btn" onclick="checkAnswer('strat1', 'q1-1', 1, 3)">B. To draw pictures</button>
+              <button class="quiz-opt-btn" onclick="checkAnswer('strat1', 'q1-1', 2, 3)">C. To plan global trips</button>
+              <button class="quiz-opt-btn" onclick="checkAnswer('strat1', 'q1-1', 3, 3)">D. To record goods in stores</button>
+            </div>
+            <div class="quiz-accordion" id="acc-q1-1">
+              <div class="quiz-acc-title">💡 技巧 #01 考點深度解析：</div>
+              <div class="quiz-acc-text">定位第 1 段中 1810s 的句子："At that time, merchants carried small notebooks to record goods in stores."，直接命中答案 (D)。</div>
+              <div class="quiz-acc-zh">【整句中文翻譯】：1810年代英國商人隨身攜帶小筆記本是為了記錄店鋪中的商品貨物。</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- 需求 7：技巧 02 獨立研習頁面 (Topic Sentences & Hamburger)     -->
+    <!-- ============================================================ -->
+
+      <!-- 專屬統測真題佐證專區 -->
+      <section class="tve-section-card" style="margin-top: 24px;">
+        <div class="tve-section-header">
+          <div class="tve-header-title">🏛️ 歷屆統測真題佐證專區（⏳ 技巧 #01：時間標記與時態演進）</div>
+          <button class="clue-toggle-btn" id="btn-toggle-tve" onclick="toggleClues('tve')">
+            💡 考點視覺線索：關閉中（點擊開啟）
+          </button>
+        </div>
+        <p style="font-size:14px; color:#475569; margin-bottom:14px; line-height:1.5;">
+          以下篇章選自歷屆技高統測（四技二專統一入學測驗）真題，精準印證本策略之解題實效。點擊單字可隨行查詞，點擊句子可定位線索！
+        </p>
+
+        <!-- 真題容器 -->
+        <div class="tve-proofs-container" id="tveProofsList"></div>
+      </section>
+
+      
+      <!-- 底部雙向導航 -->
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin:30px 0 20px 0; padding:16px; background:#fff; border-radius:12px; border:1px solid #e2e8f0;">
+        <a href="../00_閱讀技巧.html" style="color:#0284c7; text-decoration:none; font-weight:700; font-size:14px;">🏠 返回策略總覽導航中心</a>
+        <div style="display:flex; gap:10px;">
+          
+          <a href="../02_主題句與漢堡段落結構/02_主題句與漢堡段落結構.html" style="padding:8px 14px; background:#0284c7; color:#fff; border-radius:8px; text-decoration:none; font-size:13.5px; font-weight:700;">下一策略 ➔</a>
+        </div>
+      </div>
+    
+    </div>
+  </main>
+
+  <footer class="page-footer">
+    英語教學研發團隊 · 版權所有 © 2026
+  </footer>
+
+  <script>
+    const VOCAB_DICT = {"sister":{"pos":"n.","zh":"姊妹、護理師"},"nurse":{"pos":"n.","zh":"護理師、護士"},"hospital":{"pos":"n.","zh":"醫院"},"work":{"pos":"v.","zh":"工作、運作"},"works":{"pos":"v.","zh":"工作（三單形式）"},"often":{"pos":"adv.","zh":"常常、時常"},"study":{"pos":"v.","zh":"研讀、學習"},"studies":{"pos":"v.","zh":"研讀（三單形式）"},"library":{"pos":"n.","zh":"圖書館"},"friend":{"pos":"n.","zh":"朋友"},"friends":{"pos":"n.","zh":"朋友們（複數）"},"like":{"pos":"v.","zh":"喜歡；介. 像"},"coffee":{"pos":"n.","zh":"咖啡"},"look":{"pos":"v.","zh":"看、注視"},"weather":{"pos":"n.","zh":"天氣（不可數名詞）"},"sunny":{"pos":"adj.","zh":"陽光充足的、晴朗的"},"warm":{"pos":"adj.","zh":"溫暖的"},"today":{"pos":"adv.","zh":"今天"},"everyone":{"pos":"pron.","zh":"每個人（視為第三人稱單數）"},"everybody":{"pos":"pron.","zh":"每個人（視為單數）"},"someone":{"pos":"pron.","zh":"某人（視為單數）"},"nobody":{"pos":"pron.","zh":"無人（視為單數）"},"everything":{"pos":"pron.","zh":"每件事物（視為單數）"},"class":{"pos":"n.","zh":"班級、課堂"},"notebook":{"pos":"n.","zh":"筆記本"},"record":{"pos":"v.","zh":"記錄、錄音"},"daily":{"pos":"adj.","zh":"每日的、日常的"},"homework":{"pos":"n.","zh":"作業（不可數名詞）"},"water":{"pos":"n.","zh":"水（不可數名詞）"},"money":{"pos":"n.","zh":"金錢（不可數名詞）"},"music":{"pos":"n.","zh":"音樂（不可數名詞）"},"time":{"pos":"n.","zh":"時間（不可數名詞）"},"always":{"pos":"adv.","zh":"總是、永遠"},"watch":{"pos":"v.","zh":"觀看；n. 手錶"},"watches":{"pos":"v.","zh":"觀看（watch的三單）"},"wash":{"pos":"v.","zh":"清洗、洗滌"},"washes":{"pos":"v.","zh":"清洗（三單加 -es）"},"fix":{"pos":"v.","zh":"修理、固定"},"fixes":{"pos":"v.","zh":"修理（三單加 -es）"},"pass":{"pos":"v.","zh":"通過、傳遞"},"passes":{"pos":"v.","zh":"通過（三單加 -es）"},"baseball":{"pos":"n.","zh":"棒球"},"games":{"pos":"n.","zh":"比賽、遊戲（複數）"},"dinner":{"pos":"n.","zh":"晚餐"},"online":{"pos":"adj./adv.","zh":"線上的、在線地"},"every":{"pos":"adj.","zh":"每一個的"},"night":{"pos":"n.","zh":"夜晚、晚上"},"agree":{"pos":"v.","zh":"同意（一般動詞）"},"plan":{"pos":"n.","zh":"計畫、方案"},"finishing":{"pos":"v-ing","zh":"完成（finish之動名詞）"},"boil":{"pos":"v.","zh":"沸騰、煮沸"},"boils":{"pos":"v.","zh":"沸騰（三單加 -s）"},"degrees":{"pos":"n.","zh":"度數（複數）"},"celsius":{"pos":"n.","zh":"攝氏溫度"},"enough":{"pos":"adj./adv.","zh":"足夠的、充分地"},"shoes":{"pos":"n.","zh":"鞋子（複數）"},"student":{"pos":"n.","zh":"學生"},"computer":{"pos":"n.","zh":"電腦"},"lab":{"pos":"n.","zh":"實驗室、電腦教室"},"helpful":{"pos":"adj.","zh":"樂於助人的、有幫助的"},"tired":{"pos":"adj.","zh":"疲勞的、累的"},"late":{"pos":"adj.","zh":"遲到的、晚的"},"ready":{"pos":"adj.","zh":"準備就緒的"},"teacher":{"pos":"n.","zh":"老師、教師"},"apples":{"pos":"n.","zh":"蘋果（複數）"},"live":{"pos":"v.","zh":"居住、生活"},"taoyuan":{"pos":"n.","zh":"桃園"},"answer":{"pos":"n.","zh":"答案；v. 回答"},"basketball":{"pos":"n.","zh":"籃球"},"have":{"pos":"v.","zh":"擁有、吃、舉辦"},"has":{"pos":"v.","zh":"擁有（have之三單形式）"},"satisfying":{"pos":"adj.","zh":"令人滿意、有成就感的"},"game":{"pos":"n.","zh":"比賽、競賽"},"last":{"pos":"adj.","zh":"剛過去的、上一個"},"exciting":{"pos":"adj.","zh":"令人興奮刺激的"},"excited":{"pos":"adj.","zh":"感到興奮期待的"},"excite":{"pos":"v.","zh":"使感到興奮"},"cheer":{"pos":"v.","zh":"歡呼、喝采"},"cheered":{"pos":"v.","zh":"歡呼、喝采 (過去式)"},"loudly":{"pos":"adv.","zh":"大聲地、響亮地"},"students":{"pos":"n.","zh":"學生們（複數）"},"interested":{"pos":"adj.","zh":"感到感興趣的"},"interesting":{"pos":"adj.","zh":"有趣的、令人感興趣的"},"interest":{"pos":"v./n.","zh":"使感興趣 / 興趣"},"learning":{"pos":"n./v-ing","zh":"學習"},"learn":{"pos":"v.","zh":"學習"},"learned":{"pos":"v.","zh":"學到、學習 (過去式)"},"mobile":{"pos":"adj.","zh":"行動的、手機的"},"app":{"pos":"n.","zh":"應用程式"},"programming":{"pos":"n.","zh":"程式設計"},"program":{"pos":"n.","zh":"程式"},"waiting":{"pos":"v-ing","zh":"等待中"},"wait":{"pos":"v.","zh":"等待"},"line":{"pos":"n.","zh":"隊伍、排隊"},"hours":{"pos":"n.","zh":"小時"},"hour":{"pos":"n.","zh":"小時"},"customers":{"pos":"n.","zh":"顧客們"},"customer":{"pos":"n.","zh":"顧客"},"became":{"pos":"v.","zh":"變得、變成"},"become":{"pos":"v.","zh":"變成"},"bored":{"pos":"adj.","zh":"感到無聊厭煩的"},"boring":{"pos":"adj.","zh":"令人無聊乏味的"},"bore":{"pos":"v.","zh":"使感到無聊"},"boredom":{"pos":"n.","zh":"無聊、厭倦"},"satisfied":{"pos":"adj.","zh":"感到滿意知足的"},"satisfy":{"pos":"v.","zh":"使感到滿意"},"satisfies":{"pos":"v.","zh":"使感到滿意 (單數)"},"satisfaction":{"pos":"n.","zh":"滿意、滿足"},"smartphone":{"pos":"n.","zh":"智慧型手機"},"camera":{"pos":"n.","zh":"相機、鏡頭"},"battery":{"pos":"n.","zh":"電池、電量"},"life":{"pos":"n.","zh":"壽命、生命"},"users":{"pos":"n.","zh":"使用者們"},"resolution":{"pos":"n.","zh":"解析度"},"great":{"pos":"adj.","zh":"棒極了、極好的"},"trip":{"pos":"n.","zh":"旅行、校外教學"},"museum":{"pos":"n.","zh":"博物館"},"science":{"pos":"n.","zh":"科學"},"children":{"pos":"n.","zh":"孩子們、兒童們（複數）"},"blast":{"pos":"n.","zh":"狂歡、極佳時光"},"speech":{"pos":"n.","zh":"演講、致詞"},"speeches":{"pos":"n.","zh":"演講們"},"almost":{"pos":"adv.","zh":"幾乎、差點"},"fell":{"pos":"v.","zh":"落下（fall的過去式）"},"asleep":{"pos":"adj.","zh":"睡著的"},"guitar":{"pos":"n.","zh":"吉他"},"band":{"pos":"n.","zh":"樂團、樂隊"},"playing":{"pos":"v-ing","zh":"彈奏、打球"},"play":{"pos":"v.","zh":"玩耍、演奏"},"delicious":{"pos":"adj.","zh":"美味的、好吃的"},"homemade":{"pos":"adj.","zh":"自製的、家常的"},"cake":{"pos":"n.","zh":"蛋糕"},"watching":{"pos":"v-ing","zh":"觀看"},"videos":{"pos":"n.","zh":"影片"},"animation":{"pos":"n.","zh":"動漫、動畫"},"festival":{"pos":"n.","zh":"節慶、活動盛會"},"yesterday":{"pos":"adv./n.","zh":"昨天"},"enjoy":{"pos":"v.","zh":"享受、喜愛"},"tourists":{"pos":"n.","zh":"觀光客們"},"tourist":{"pos":"n.","zh":"觀光客"},"foreign":{"pos":"adj.","zh":"外國的"},"polite":{"pos":"adj.","zh":"有禮貌的、客氣的"},"driver":{"pos":"n.","zh":"司機；駕駛員"},"quite":{"pos":"adv.","zh":"相當、頗為"},"vocational":{"pos":"adj.","zh":"職業的、高職的"},"network":{"pos":"n.","zh":"網路"},"security":{"pos":"n.","zh":"資安、安全性"},"delayed":{"pos":"adj./v.","zh":"延誤的、耽擱的"},"flight":{"pos":"n.","zh":"航班、飛機"},"extremely":{"pos":"adv.","zh":"極其、非常地"},"hearing":{"pos":"v-ing","zh":"聽說、得知"},"monotone":{"pos":"adj./n.","zh":"單調平淡的"},"voice":{"pos":"n.","zh":"嗓音、說話聲"},"flat":{"pos":"adj.","zh":"平淡的、扁平的"},"smiles":{"pos":"v./n.","zh":"微笑"},"person":{"pos":"n.","zh":"人、個人"},"spectators":{"pos":"n.","zh":"現場觀眾們"},"championship":{"pos":"n.","zh":"錦標賽、冠軍"},"final":{"pos":"n./adj.","zh":"決賽 / 最終的"},"second":{"pos":"n./adj.","zh":"秒 / 第二的"},"chef":{"pos":"n.","zh":"主廚、大廚"},"overtime":{"pos":"adv./n.","zh":"加班"},"banquet":{"pos":"n.","zh":"宴席、宴會"},"flavor":{"pos":"n.","zh":"風味、滋味"},"owner":{"pos":"n.","zh":"業主、老闆"},"novel":{"pos":"n.","zh":"小說"},"plot":{"pos":"n.","zh":"情節"},"crowd":{"pos":"n.","zh":"群眾"},"service":{"pos":"n.","zh":"服務"},"coaster":{"pos":"n.","zh":"雲霄飛車"},"roller":{"pos":"n.","zh":"滾輪、雲霄飛車"},"riding":{"pos":"v-ing","zh":"搭乘、騎乘"},"meeting":{"pos":"n.","zh":"會議"},"project":{"pos":"n.","zh":"專案、計畫"},"lucas":{"pos":"n.","zh":"盧卡斯（男子名）"},"gets":{"pos":"v.","zh":"得到；起身（get的第三人稱單數）"},"get":{"pos":"v.","zh":"得到；到達"},"takes":{"pos":"v.","zh":"搭乘；拿取（take的三單）"},"take":{"pos":"v.","zh":"搭乘；花費；拿"},"took":{"pos":"v.","zh":"搭乘；拿取（take的過去式）"},"bus":{"pos":"n.","zh":"公車；巴士"},"school":{"pos":"n.","zh":"學校"},"morning":{"pos":"n.","zh":"早晨；上午"},"steven":{"pos":"n.","zh":"史蒂芬（男子名）"},"early":{"pos":"adj./adv.","zh":"早的；早地"},"earth":{"pos":"n.","zh":"地球"},"moves":{"pos":"v.","zh":"移動；運轉（move的三單）"},"move":{"pos":"v.","zh":"移動；搬家"},"around":{"pos":"prep.","zh":"圍繞；環繞"},"sun":{"pos":"n.","zh":"太陽"},"knowledge":{"pos":"n.","zh":"知識"},"power":{"pos":"n.","zh":"力量；權力"},"tina":{"pos":"n.","zh":"蒂娜（女子名）"},"bought":{"pos":"v.","zh":"購買（buy的過去式）"},"buy":{"pos":"v.","zh":"購買"},"dress":{"pos":"n.","zh":"洋裝；連身裙"},"week":{"pos":"n.","zh":"週；星期"},"lake":{"pos":"n.","zh":"湖泊"},"beautiful":{"pos":"adj.","zh":"美麗的"},"ago":{"pos":"adv.","zh":"以前"},"jason":{"pos":"n.","zh":"傑森（男子名）"},"leave":{"pos":"v.","zh":"離開；留下"},"taipei":{"pos":"n.","zh":"台北"},"next":{"pos":"adj.","zh":"下一個的；接下來的"},"month":{"pos":"n.","zh":"月份"},"visit":{"pos":"v.","zh":"拜訪；參觀"},"grandpa":{"pos":"n.","zh":"祖父；爺爺；外公"},"tomorrow":{"pos":"adv./n.","zh":"明天"},"awesome":{"pos":"adj.","zh":"很棒的；令人驚嘆的"},"certainly":{"pos":"adv.","zh":"必定；毫無疑問地"},"unforgettable":{"pos":"adj.","zh":"令人難忘的"},"memory":{"pos":"n.","zh":"回憶；記憶"},"future":{"pos":"n./adj.","zh":"未來；將來的"},"accident":{"pos":"n.","zh":"車禍；意外事故"},"slept":{"pos":"v.","zh":"睡覺（sleep的過去式）"},"sleep":{"pos":"v.","zh":"睡覺"},"drove":{"pos":"v.","zh":"駕駛；開車（drive的過去式）"},"drive":{"pos":"v.","zh":"開車"},"taxi":{"pos":"n.","zh":"計程車"},"fast":{"pos":"adj./adv.","zh":"快速的；快地"},"hurt":{"pos":"v./adj.","zh":"受傷；疼痛"},"decided":{"pos":"v.","zh":"決定（decide的過去式）"},"decide":{"pos":"v.","zh":"決定"},"cloudy":{"pos":"adj.","zh":"多雲的；陰天的"},"cold":{"pos":"adj.","zh":"寒冷的"},"christmas":{"pos":"n.","zh":"聖誕節"},"falls":{"pos":"v.","zh":"落下；適逢（fall的三單）"},"fall":{"pos":"v.","zh":"落下；適逢"},"park":{"pos":"n.","zh":"公園"},"rain":{"pos":"vi./n.","zh":"下雨；雨水"},"dance":{"pos":"n./v.","zh":"舞會；跳舞"},"soccer":{"pos":"n.","zh":"足球"},"chloe":{"pos":"n.","zh":"克蘿伊（女子名）"},"crying":{"pos":"v.","zh":"哭泣（cry的現在分詞）"},"cry":{"pos":"vi.","zh":"哭泣；呼喊"},"lost":{"pos":"v.","zh":"遺失；弄丟（lose的過去式）"},"lose":{"pos":"vt.","zh":"遺失；輸掉"},"smiled":{"pos":"v.","zh":"微笑（smile的過去式）"},"smile":{"pos":"vi.","zh":"微笑"},"little":{"pos":"adj.","zh":"小巧的；幼小的"},"girl":{"pos":"n.","zh":"女孩"},"worry":{"pos":"vi./vt.","zh":"擔心；發愁"},"rained":{"pos":"v.","zh":"下雨（rain的過去式）"},"touch":{"pos":"vt.","zh":"觸摸；碰觸"},"plate":{"pos":"n.","zh":"盤子；碟子"},"likes":{"pos":"v.","zh":"喜歡（like的三單）"},"lions":{"pos":"n.","zh":"獅子（複數）"},"lion":{"pos":"n.","zh":"獅子"},"shop":{"pos":"n.","zh":"商店；店舖"},"weekend":{"pos":"n.","zh":"週末"},"breakfast":{"pos":"n.","zh":"早餐"},"leaves":{"pos":"v.","zh":"離開（leave的三單）"},"house":{"pos":"n.","zh":"房子；家"},"walks":{"pos":"v.","zh":"走路；步行"},"walk":{"pos":"vi.","zh":"步行"},"train":{"pos":"n.","zh":"火車；列車"},"station":{"pos":"n.","zh":"車站"},"arrives":{"pos":"v.","zh":"到達；抵達"},"arrive":{"pos":"vi.","zh":"到達；抵達"},"reads":{"pos":"v.","zh":"閱讀（read的三單）"},"read":{"pos":"vt./vi.","zh":"閱讀"},"book":{"pos":"n.","zh":"書籍"},"goes":{"pos":"v.","zh":"去；前往"},"bed":{"pos":"n.","zh":"床舖"},"paintings":{"pos":"n.","zh":"畫作；繪畫"},"famous":{"pos":"adj.","zh":"著名的"},"joke":{"pos":"n.","zh":"笑話"},"told":{"pos":"v.","zh":"告訴（tell的過去式）"},"tell":{"pos":"vt.","zh":"告訴；講述"},"exhausted":{"pos":"adj.","zh":"筋疲力盡的"},"thoroughly":{"pos":"adv.","zh":"徹底地、完全地"},"smoothly":{"pos":"adv.","zh":"流暢地、順暢地"},"violin":{"pos":"n.","zh":"小提琴"},"shift":{"pos":"n.","zh":"值班、輪班"},"competition":{"pos":"n.","zh":"競爭、比賽"},"revenue":{"pos":"n.","zh":"營收、收入"},"shortages":{"pos":"n.","zh":"短缺、缺乏"},"export":{"pos":"n./v.","zh":"出口、外銷"},"artificial":{"pos":"adj.","zh":"人造的、人工的"},"intelligence":{"pos":"n.","zh":"智慧、智力"},"mission":{"pos":"n.","zh":"任務、使命"},"assigned":{"pos":"v.","zh":"指派、分配"},"positive":{"pos":"adj.","zh":"正向的、積極的"},"graduation":{"pos":"n.","zh":"畢業"},"certificate":{"pos":"n.","zh":"證書、獎狀"},"tablet":{"pos":"n.","zh":"繪圖板/平板"},"professional":{"pos":"adj.","zh":"專業的"},"barbecue":{"pos":"n.","zh":"戶外烤肉"},"circuit":{"pos":"n.","zh":"電路、線路"},"focus":{"pos":"v.","zh":"專注、聚焦"},"attention":{"pos":"n.","zh":"注意力"},"sanitize":{"pos":"v.","zh":"消毒、清潔"},"apprentice":{"pos":"n.","zh":"學徒、實習生"},"bakery":{"pos":"n.","zh":"烘焙坊"},"carpentry":{"pos":"n.","zh":"木工實習"},"assemble":{"pos":"v.","zh":"組裝、裝配"},"iconic":{"pos":"adj.","zh":"具代表性的"},"landmark":{"pos":"n.","zh":"地標"},"comforted":{"pos":"v.","zh":"撫慰、安慰"},"safety":{"pos":"n.","zh":"安全"},"instructions":{"pos":"n.","zh":"守則、指示"},"laboratory":{"pos":"n.","zh":"實驗室、工場"},"commuter":{"pos":"adj.","zh":"通勤的"},"competitiveness":{"pos":"n.","zh":"競爭力"},"friendly":{"pos":"adj.","zh":"友善的"},"lived":{"pos":"v.","zh":"居住"},"graduated":{"pos":"v.","zh":"畢業"},"complaints":{"pos":"n.","zh":"投訴、抱怨"},"employees":{"pos":"n.","zh":"員工"},"shipped":{"pos":"v.","zh":"出貨、寄送"},"orders":{"pos":"n.","zh":"訂單"},"robotics":{"pos":"n.","zh":"機器人技術"},"contest":{"pos":"n.","zh":"競賽、比賽"},"demonstration":{"pos":"n.","zh":"示範、展示"},"pollution":{"pos":"n.","zh":"污染、污染物"},"solving":{"pos":"v-ing","zh":"解決"},"essential":{"pos":"adj.","zh":"至關重要的"},"practical":{"pos":"adj.","zh":"實用的"},"encourage":{"pos":"v.","zh":"鼓勵"},"recycle":{"pos":"v.","zh":"回收"},"contamination":{"pos":"n.","zh":"污染、混雜"},"prosperous":{"pos":"adj.","zh":"繁榮的"},"industrial":{"pos":"adj.","zh":"工業的"},"mechanic":{"pos":"n.","zh":"技工"},"blueprint":{"pos":"n.","zh":"工程藍圖"},"expertise":{"pos":"n.","zh":"專業專長"},"workplace":{"pos":"n.","zh":"職場、工作場所"},"currency":{"pos":"n.","zh":"外幣、貨幣"},"terminal":{"pos":"n.","zh":"機場航廈、終點站"},"patience":{"pos":"n.","zh":"耐心"},"persistent":{"pos":"adj.","zh":"持續不懈的"},"wallet":{"pos":"n.","zh":"皮夾、電子錢包"},"electronic":{"pos":"adj.","zh":"電子的"},"regret":{"pos":"v.","zh":"後悔"},"careless":{"pos":"adj.","zh":"粗心的"},"goggles":{"pos":"n.","zh":"護目鏡"},"experts":{"pos":"n.","zh":"專家"},"processor":{"pos":"n.","zh":"處理器"},"delicate":{"pos":"adj.","zh":"精緻的、細膩的"},"pastry":{"pos":"n.","zh":"糕點"},"reach":{"pos":"v.","zh":"到達、抵達"},"climber":{"pos":"n.","zh":"登山者、攀岩家"},"managed":{"pos":"v.","zh":"成功做到、設法完成"},"officer":{"pos":"n.","zh":"警官、官員"},"fake":{"pos":"adj.","zh":"虛假的、偽造的"},"health":{"pos":"n.","zh":"健康"},"respected":{"pos":"adj./p.p.","zh":"受尊重的"},"rights":{"pos":"n.","zh":"權利"},"concerts":{"pos":"n.","zh":"音樂會、演唱會"},"sold":{"pos":"v./p.p.","zh":"售出、賣掉"},"scissors":{"pos":"n.","zh":"剪刀"},"symbolize":{"pos":"v.","zh":"象徵、代表"},"solid":{"pos":"adj.","zh":"堅固的、穩固的"},"receive":{"pos":"v.","zh":"接收、接到"},"unknown":{"pos":"adj.","zh":"未知的、不明的"},"checking":{"pos":"v-ing","zh":"查證、核對"},"although":{"pos":"conj.","zh":"雖然、儘管"},"because":{"pos":"conj.","zh":"因為"},"however":{"pos":"adv.","zh":"然而、但是"},"practice":{"pos":"v.","zh":"練習、實習"},"commercial":{"pos":"詞彙","zh":"商業的"},"shipping":{"pos":"n.","zh":"航運、海運、運送"},"announcement":{"pos":"詞彙","zh":"公告/廣播"},"passengers":{"pos":"n.","zh":"乘客們"},"technicians":{"pos":"詞彙","zh":"技術人員"},"layoff":{"pos":"詞彙","zh":"解雇/裁員"},"reliable":{"pos":"詞彙","zh":"可靠的"},"laptop":{"pos":"詞彙","zh":"筆電"},"manufactures":{"pos":"詞彙","zh":"製造"},"solar":{"pos":"詞彙","zh":"太陽能的"},"taller":{"pos":"詞彙","zh":"更高的"},"breakdown":{"pos":"詞彙","zh":"故障/損壞"},"noises":{"pos":"詞彙","zh":"噪音"},"choose":{"pos":"詞彙","zh":"選擇"},"major":{"pos":"詞彙","zh":"主修科系"},"skillfully":{"pos":"詞彙","zh":"熟練地"},"proposal":{"pos":"詞彙","zh":"提案/企劃"},"evaluated":{"pos":"詞彙","zh":"評估"},"consultants":{"pos":"詞彙","zh":"顧問"},"frightened":{"pos":"詞彙","zh":"受驚的"},"confidence":{"pos":"詞彙","zh":"信心"},"inspections":{"pos":"詞彙","zh":"檢驗/檢查"},"imported":{"pos":"詞彙","zh":"進口的"},"habits":{"pos":"詞彙","zh":"習慣"},"apprentices":{"pos":"詞彙","zh":"學徒"},"residents":{"pos":"n.","zh":"居民、定居者（複數）"},"incinerator":{"pos":"詞彙","zh":"焚化爐"},"object":{"pos":"詞彙","zh":"反對"},"electrical":{"pos":"詞彙","zh":"電機的"},"regional":{"pos":"詞彙","zh":"區域的"},"championships":{"pos":"詞彙","zh":"冠軍錦標"},"flawlessly":{"pos":"詞彙","zh":"完美無瑕地"},"installed":{"pos":"詞彙","zh":"安裝"},"superstar":{"pos":"詞彙","zh":"超級巨星"},"spoken":{"pos":"詞彙","zh":"說/被講"},"globe":{"pos":"詞彙","zh":"地球/全球"},"formed":{"pos":"詞彙","zh":"組建/成立"},"inflation":{"pos":"詞彙","zh":"通貨膨脹"},"trained":{"pos":"詞彙","zh":"被培訓"},"incredible":{"pos":"詞彙","zh":"不可思議的"},"culinary":{"pos":"詞彙","zh":"餐飲的/烹飪的"},"seldom":{"pos":"詞彙","zh":"罕見/極少"},"production":{"pos":"詞彙","zh":"生產"},"emergency":{"pos":"詞彙","zh":"緊急"},"technical":{"pos":"詞彙","zh":"技術的"},"construction":{"pos":"詞彙","zh":"施工/建設"},"lecture":{"pos":"詞彙","zh":"演講/講座"},"customized":{"pos":"詞彙","zh":"客製化的"},"challenging":{"pos":"adj.","zh":"具挑戰性的、艱難的"},"granted":{"pos":"詞彙","zh":"理所當然"},"available":{"pos":"詞彙","zh":"可獲得的"},"plastic":{"pos":"詞彙","zh":"塑膠"},"digital":{"pos":"詞彙","zh":"數位的"},"strategies":{"pos":"詞彙","zh":"策略"},"ingredients":{"pos":"詞彙","zh":"食材/原料"},"postpone":{"pos":"詞彙","zh":"延期/延後"},"consideration":{"pos":"詞彙","zh":"考慮"},"located":{"pos":"詞彙","zh":"坐落於"},"quiet":{"pos":"詞彙","zh":"安靜的"},"hardworking":{"pos":"詞彙","zh":"勤奮的"},"efficiency":{"pos":"詞彙","zh":"效率"},"utmost":{"pos":"詞彙","zh":"極度的/最重要的"},"software":{"pos":"詞彙","zh":"軟體"},"trial":{"pos":"詞彙","zh":"試驗/測試"},"toolbox":{"pos":"詞彙","zh":"工具箱"},"complicated":{"pos":"詞彙","zh":"複雜的"},"decipher":{"pos":"詞彙","zh":"破解/解讀"},"footage":{"pos":"詞彙","zh":"影片片段"},"aerial":{"pos":"詞彙","zh":"航空的/空中的"},"surprised":{"pos":"adj.","zh":"感到驚訝的"},"address":{"pos":"n.","zh":"地址；v. 處理、發表演說"},"complaint":{"pos":"詞彙","zh":"投訴"},"confident":{"pos":"詞彙","zh":"自信的"},"director":{"pos":"詞彙","zh":"總監/主任"},"exchange":{"pos":"詞彙","zh":"兌換"},"bank":{"pos":"n.","zh":"河岸；銀行"},"opens":{"pos":"詞彙","zh":"開門/營業"},"implement":{"pos":"詞彙","zh":"執行/推行"},"malfunction":{"pos":"詞彙","zh":"故障"},"initially":{"pos":"詞彙","zh":"起初"},"enterprise":{"pos":"詞彙","zh":"企業"},"consumers":{"pos":"詞彙","zh":"消費者"},"prefer":{"pos":"v.","zh":"更喜愛、偏好"},"modeling":{"pos":"詞彙","zh":"建模"},"minutes":{"pos":"詞彙","zh":"分鐘"},"usually":{"pos":"詞彙","zh":"通常"},"precision":{"pos":"詞彙","zh":"精度/精準"},"equipment":{"pos":"詞彙","zh":"設備"},"mistakes":{"pos":"詞彙","zh":"錯誤"},"welding":{"pos":"詞彙","zh":"焊接"},"certifications":{"pos":"詞彙","zh":"證照"},"agreement":{"pos":"n.","zh":"協議、協定、同意"},"installation":{"pos":"詞彙","zh":"安裝"},"wetter":{"pos":"詞彙","zh":"更潮濕的"},"hotter":{"pos":"詞彙","zh":"更熱的"},"model":{"pos":"詞彙","zh":"型號"},"expected":{"pos":"詞彙","zh":"預期"},"participants":{"pos":"詞彙","zh":"參賽者"},"countryside":{"pos":"n.","zh":"鄉村、農村"},"quality":{"pos":"詞彙","zh":"品質"},"abroad":{"pos":"adv.","zh":"在國外、到國外"},"plans":{"pos":"n.","zh":"計畫、打算"},"aunt":{"pos":"n.","zh":"姑姑、阿姨、嬸嬸"},"crowded":{"pos":"adj.","zh":"擁擠的、擠滿人的"},"seats":{"pos":"n.","zh":"座位（複數）"},"taken":{"pos":"p.p.","zh":"被佔用、被坐滿（take之p.p.）"},"living":{"pos":"n.","zh":"客廳；生活"},"steps":{"pos":"n.","zh":"腳步、步驟"},"arrived":{"pos":"v.","zh":"抵達、到達（過去式）"},"preparing":{"pos":"v-ing","zh":"正在準備"},"shower":{"pos":"n.","zh":"驟雨、淋浴"},"soaked":{"pos":"v.","zh":"浸濕、淋透（過去式）"},"apartment":{"pos":"n.","zh":"公寓"},"stay":{"pos":"v.","zh":"暫住、停留"},"outdoor":{"pos":"adj.","zh":"戶外的"},"hands":{"pos":"n.","zh":"雙手"},"rush":{"pos":"v.","zh":"衝刺、奔馳"},"bell":{"pos":"n.","zh":"鈴聲、鐘聲"},"introduce":{"pos":"v.","zh":"介紹"},"concert":{"pos":"n.","zh":"音樂會、演唱會"},"pocket":{"pos":"n.","zh":"口袋"},"fool":{"pos":"n.","zh":"傻瓜、蠢人"},"keys":{"pos":"n.","zh":"鑰匙（複數）"},"moved":{"pos":"v.","zh":"搬家、移動（過去式）"},"town":{"pos":"n.","zh":"城鎮、小鎮"},"finished":{"pos":"v.","zh":"完成了"},"collect":{"pos":"v.","zh":"收集、收繳"},"business":{"pos":"n.","zh":"商業、事務"},"known":{"pos":"p.p.","zh":"認識、知道（know之p.p.）"},"daughters":{"pos":"n.","zh":"女兒們（複數）"},"elementary":{"pos":"adj.","zh":"小學的、初級的"},"pure":{"pos":"adj.","zh":"純粹的、純潔的"},"completely":{"pos":"adv.","zh":"完全地、徹底地"},"comic":{"pos":"n./adj.","zh":"漫畫（書）"},"candidates":{"pos":"n.","zh":"候選人、應試者"},"rejected":{"pos":"v.","zh":"拒絕、駁回"},"accepted":{"pos":"v.","zh":"接受、答應（過去式）"},"cooking":{"pos":"n./v-ing","zh":"烹飪、做菜"},"burn":{"pos":"v.","zh":"燒焦、燃燒"},"coat":{"pos":"n.","zh":"外套、大衣"},"chilly":{"pos":"adj.","zh":"寒冷的、涼颼颼的"},"catch":{"pos":"v.","zh":"染上（感冒）、抓住"},"medicine":{"pos":"n.","zh":"藥物、藥品"},"better":{"pos":"adj.","zh":"感覺好多了、更好的"},"classmates":{"pos":"n.","zh":"同學們"},"puppy":{"pos":"n.","zh":"小狗、幼犬"},"sick":{"pos":"adj.","zh":"生病的、不適的"},"achieved":{"pos":"v.","zh":"達成、取得（過去式）"},"grades":{"pos":"n.","zh":"成績、年級"},"lonely":{"pos":"adj.","zh":"寂寞孤單的"},"dishes":{"pos":"n.","zh":"盤子、餐具"},"forecast":{"pos":"n.","zh":"預報、預測"},"market":{"pos":"n.","zh":"市集、市場"},"cancelled":{"pos":"v.","zh":"取消（過去式）"},"traffic":{"pos":"n.","zh":"交通、車流"},"airport":{"pos":"n.","zh":"機場、航空站"},"parents":{"pos":"n.","zh":"雙親、父母"},"bananas":{"pos":"n.","zh":"香蕉（複數）"},"outside":{"pos":"n./adv.","zh":"外表、外面"},"handsome":{"pos":"adj.","zh":"英俊帥氣的"},"talking":{"pos":"v-ing","zh":"正在談話"},"storybook":{"pos":"n.","zh":"故事書"},"colorful":{"pos":"adj.","zh":"色彩豐富的"},"scientist":{"pos":"n.","zh":"科學家"},"research":{"pos":"n.","zh":"研究、學術成果"},"inspiring":{"pos":"adj.","zh":"令人鼓舞的、啟發的"},"kicked":{"pos":"v.","zh":"踢、踢出（過去式）"},"success":{"pos":"n.","zh":"成功、成就"},"key":{"pos":"n.","zh":"關鍵、鑰匙"},"nearest":{"pos":"adj.","zh":"最近的（最高級）"},"wonder":{"pos":"v.","zh":"想知道、納悶"},"technician":{"pos":"n.","zh":"技師、技術員"},"refrigerator":{"pos":"n.","zh":"冰箱"},"bridge":{"pos":"n.","zh":"橋樑"},"spot":{"pos":"n.","zh":"景點、地點"},"prepared":{"pos":"v.","zh":"準備好的、調配的"},"missing":{"pos":"adj.","zh":"失蹤的、遺失的"},"trash":{"pos":"n.","zh":"垃圾"},"tide":{"pos":"n.","zh":"潮汐、海潮"},"beach":{"pos":"n.","zh":"海灘"},"office":{"pos":"n.","zh":"辦公室"},"snowy":{"pos":"adj.","zh":"下雪的、積雪的"},"piano":{"pos":"n.","zh":"鋼琴"},"eventually":{"pos":"adv.","zh":"最終、最後"},"report":{"pos":"n.","zh":"報告"},"break":{"pos":"n.","zh":"休息、休息時間"},"party":{"pos":"n.","zh":"聚會、派對"},"bench":{"pos":"n.","zh":"長凳、長椅"},"distance":{"pos":"n.","zh":"距離、遠處"},"beautifully":{"pos":"adv.","zh":"優美地、悅耳地"},"strict":{"pos":"adj.","zh":"嚴格的、嚴厲的"},"vocabulary":{"pos":"n.","zh":"單字、字彙"},"climb":{"pos":"v.","zh":"攀爬、爬上"},"window":{"pos":"n.","zh":"窗戶"},"explosion":{"pos":"n.","zh":"爆炸"},"shake":{"pos":"v.","zh":"搖動、震顫"},"scared":{"pos":"adj.","zh":"害怕的、驚嚇的"},"national":{"pos":"adj.","zh":"全國性的、國家的"},"proud":{"pos":"adj.","zh":"引以為榮的、自豪的"},"halfway":{"pos":"adv.","zh":"在半途、中途"},"drama":{"pos":"n.","zh":"戲劇、話劇"},"club":{"pos":"n.","zh":"社團、俱樂部"},"idol":{"pos":"n.","zh":"偶像"},"screamed":{"pos":"v.","zh":"尖叫、大喊"},"conditioner":{"pos":"n.","zh":"調節器、冷氣機"},"forget":{"pos":"v.","zh":"忘記"},"honest":{"pos":"adj.","zh":"誠實的、正直的"},"tough":{"pos":"adj.","zh":"困難的、棘手的"},"situations":{"pos":"n.","zh":"情況、情勢"},"neck":{"pos":"n.","zh":"脖子、頸部"},"hurts":{"pos":"v.","zh":"疼痛、傷害"},"turn":{"pos":"v.","zh":"轉動、旋轉"},"faster":{"pos":"adj.","zh":"更快的（比較級）"},"summer":{"pos":"n.","zh":"夏天"},"fan":{"pos":"n.","zh":"電風扇；迷"},"race":{"pos":"n.","zh":"比賽、賽跑"},"attracting":{"pos":"v-ing","zh":"正在吸引"},"hikers":{"pos":"n.","zh":"登山客（複數）"},"spicy":{"pos":"adj.","zh":"辛辣的"},"traveled":{"pos":"v.","zh":"旅行過了"},"rescue":{"pos":"n./v.","zh":"救援、搜救"},"dense":{"pos":"adj.","zh":"濃密的、稠密的"},"locate":{"pos":"v.","zh":"找到、定位"},"motorcycle":{"pos":"n.","zh":"摩托車"},"fashionable":{"pos":"adj.","zh":"時髦的、流行的"},"jacket":{"pos":"n.","zh":"夾克外套"},"winter":{"pos":"n.","zh":"冬天"},"government":{"pos":"n.","zh":"政府"},"billion":{"pos":"n.","zh":"十億"},"plants":{"pos":"n.","zh":"植物（複數）"},"garden":{"pos":"n.","zh":"花園"},"typhoon":{"pos":"n.","zh":"颱風"},"climbing":{"pos":"n.","zh":"登山活動"},"winds":{"pos":"n.","zh":"風勢（複數）"},"grow":{"pos":"v.","zh":"生長、成長"},"helmet":{"pos":"n.","zh":"安全帽、頭盔"},"puzzle":{"pos":"n.","zh":"謎題、難題"},"solve":{"pos":"v.","zh":"解決、解開"},"coach":{"pos":"n.","zh":"教練"},"training":{"pos":"n.","zh":"訓練課程"},"allowed":{"pos":"v.","zh":"允許（過去式/分詞）"},"temple":{"pos":"n.","zh":"寺廟、廟宇"},"height":{"pos":"n.","zh":"高度"},"level":{"pos":"n.","zh":"水平面、程度"},"vacation":{"pos":"n.","zh":"假期"},"sunlight":{"pos":"n.","zh":"陽光"},"street":{"pos":"n.","zh":"街道"},"temperatures":{"pos":"n.","zh":"氣溫、溫度"},"cookies":{"pos":"n.","zh":"餅乾（複數）"},"baked":{"pos":"v.","zh":"烘烤好了"},"giant":{"pos":"adj.","zh":"巨大的、龐大的"},"dragon":{"pos":"n.","zh":"龍"},"cloud":{"pos":"n.","zh":"雲朵"},"reservation":{"pos":"n.","zh":"訂位、預約"},"wonderful":{"pos":"adj.","zh":"極好的、精彩的"},"skin":{"pos":"n.","zh":"皮膚"},"overall":{"pos":"adj.","zh":"全面的、整體的"},"reunion":{"pos":"n.","zh":"重聚、再結合"},"tour":{"pos":"n.","zh":"巡迴演出、旅遊"},"busy":{"pos":"詞彙","zh":"繁忙的"},"arctic":{"pos":"詞彙","zh":"北極地區"},"warming":{"pos":"詞彙","zh":"暖化"},"plane":{"pos":"n.","zh":"飛機"},"butterfly":{"pos":"n.","zh":"蝴蝶"},"kite":{"pos":"n.","zh":"風箏"},"envelope":{"pos":"n.","zh":"信封"},"plant":{"pos":"n.","zh":"植物；v. 種植"},"umbrella":{"pos":"n.","zh":"雨傘"},"terrible":{"pos":"adj.","zh":"糟糕的、可怕的"},"growing":{"pos":"v-ing","zh":"正在種植/成長"},"tomatoes":{"pos":"n.","zh":"番茄（複數）"},"stuck":{"pos":"adj.","zh":"動彈不得的、卡住的"},"burnt":{"pos":"adj.","zh":"烤焦的、燒焦的"},"smells":{"pos":"v.","zh":"聞起來"},"sea":{"pos":"n.","zh":"海洋"},"above":{"pos":"prep.","zh":"在…之上、高於"},"habit":{"pos":"n.","zh":"習慣"},"dream":{"pos":"n.","zh":"夢想；v. 作夢"},"astronaut":{"pos":"n.","zh":"太空人"},"supplies":{"pos":"n.","zh":"物資、補給品"},"earthquake":{"pos":"n.","zh":"地震"},"victims":{"pos":"n.","zh":"受害者、災民"},"eyewitness":{"pos":"n.","zh":"目擊證人"},"detailed":{"pos":"adj.","zh":"詳細的"},"suspect":{"pos":"n.","zh":"嫌疑犯"},"robbery":{"pos":"n.","zh":"搶劫案"},"boosts":{"pos":"v.","zh":"提振、增強"},"immune":{"pos":"adj.","zh":"免疫的"},"system":{"pos":"n.","zh":"系統"},"muscles":{"pos":"n.","zh":"肌肉（複數）"},"sirloin":{"pos":"n.","zh":"沙朗牛排"},"medium":{"pos":"adj.","zh":"五分熟的；中等的"},"sauce":{"pos":"n.","zh":"醬汁、醬料"},"poured":{"pos":"v.","zh":"傾倒、淋在上面"},"escalator":{"pos":"n.","zh":"自動手扶梯"},"suitcase":{"pos":"n.","zh":"行李箱"},"luggage":{"pos":"n.","zh":"行李"},"invitation":{"pos":"n.","zh":"邀請"},"decline":{"pos":"v.","zh":"委婉拒絕"},"discount":{"pos":"n.","zh":"折扣、優惠"},"clearance":{"pos":"n.","zh":"出清、清倉"},"rack":{"pos":"n.","zh":"貨架、衣架"},"directions":{"pos":"n.","zh":"方向、指引"},"straight":{"pos":"adv.","zh":"筆直地、直接地"},"blocks":{"pos":"n.","zh":"街區（複數）"},"crossroad":{"pos":"n.","zh":"十字路口"},"stomachache":{"pos":"n.","zh":"胃痛、肚子痛"},"prescribed":{"pos":"v.","zh":"開立處方"},"schedule":{"pos":"n.","zh":"時刻表、行程"},"depart":{"pos":"v.","zh":"出發、啟程"},"fare":{"pos":"n.","zh":"車資、票價"},"express":{"pos":"v.","zh":"表達；adj. 特快的"},"valid":{"pos":"adj.","zh":"有效的"},"accompanied":{"pos":"p.p.","zh":"由...陪同的"},"exhibition":{"pos":"n.","zh":"展覽"},"admission":{"pos":"n.","zh":"入場門票"},"guidelines":{"pos":"n.","zh":"參觀指南、準則"},"mosquito":{"pos":"n.","zh":"蚊子"},"mosquitoes":{"pos":"n.","zh":"蚊子（複數）"},"raindrop":{"pos":"n.","zh":"雨滴"},"rainfall":{"pos":"n.","zh":"降雨量"},"survive":{"pos":"v.","zh":"存活、生存"},"speed":{"pos":"n.","zh":"速度"},"struck":{"pos":"p.p.","zh":"被撞擊、被打中"},"effortlessly":{"pos":"adv.","zh":"毫不費力地"},"skeleton":{"pos":"n.","zh":"骨骼、外骨骼"},"mass":{"pos":"n.","zh":"質量、團塊"},"resist":{"pos":"v.","zh":"抵抗、抗拒"},"force":{"pos":"n.","zh":"力量、外力"},"collision":{"pos":"n.","zh":"碰撞、撞擊"},"absorbing":{"pos":"v-ing","zh":"正在吸收"},"resistant":{"pos":"adj.","zh":"具抵抗力的、防...的"},"profound":{"pos":"adj.","zh":"深刻的、深奧的"},"taboo":{"pos":"n.","zh":"禁忌"},"taboos":{"pos":"n.","zh":"禁忌（複數）"},"offensive":{"pos":"adj.","zh":"冒犯的、無禮的"},"embarrassing":{"pos":"adj.","zh":"令人尷尬的"},"misunderstandings":{"pos":"n.","zh":"誤會、誤解（複數）"},"funeral":{"pos":"n.","zh":"喪禮、葬禮"},"chrysanthemum":{"pos":"n.","zh":"菊花"},"chrysanthemums":{"pos":"n.","zh":"菊花（複數）"},"mourning":{"pos":"n.","zh":"哀悼、服喪"},"recipient":{"pos":"n.","zh":"收件人、受贈者"},"gratitude":{"pos":"n.","zh":"感激、感恩"},"favorite":{"pos":"adj.","zh":"最喜愛的"},"tiring":{"pos":"adj.","zh":"令人疲憊的"},"surprising":{"pos":"adj.","zh":"令人驚訝的"},"convenient":{"pos":"adj.","zh":"方便的、便利的"},"dangerous":{"pos":"adj.","zh":"危險的"},"important":{"pos":"adj.","zh":"重要的"},"popular":{"pos":"adj.","zh":"受歡迎的"},"prepare":{"pos":"v.","zh":"準備"},"protect":{"pos":"v.","zh":"保護"},"remember":{"pos":"v.","zh":"記得"},"explain":{"pos":"v.","zh":"解釋、說明"},"invite":{"pos":"v.","zh":"邀請"},"borrow":{"pos":"v.","zh":"向人借入"},"lend":{"pos":"v.","zh":"借給他人"},"spend":{"pos":"v.","zh":"花費（時間/金錢）"},"cost":{"pos":"v./n.","zh":"花費（金錢/成本）"},"afford":{"pos":"v.","zh":"負擔得起"},"unlock":{"pos":"v.","zh":"解鎖、解開"},"friendship":{"pos":"n.","zh":"友誼"},"jealousy":{"pos":"n.","zh":"嫉妒"},"unfaithfulness":{"pos":"n.","zh":"不忠誠"},"honoring":{"pos":"v-ing","zh":"尊重、敬重"},"wag":{"pos":"v.","zh":"搖動、擺動"},"tails":{"pos":"n.","zh":"尾巴（複數）"},"tail":{"pos":"n.","zh":"尾巴"},"direction":{"pos":"n.","zh":"方向"},"assume":{"pos":"v.","zh":"假定、認為"},"subtle":{"pos":"adj.","zh":"精妙的、細微的"},"companions":{"pos":"n.","zh":"同伴、同儕（複數）"},"companion":{"pos":"n.","zh":"同伴"},"processes":{"pos":"v.","zh":"處理"},"unpleasant":{"pos":"adj.","zh":"令人不快的"},"accidents":{"pos":"n.","zh":"意外事件（複數）"},"extraordinary":{"pos":"adj.","zh":"非凡的、特別的"},"foraging":{"pos":"adj.","zh":"覓食的"},"scout":{"pos":"n.","zh":"偵察兵、偵察蜂"},"nectar":{"pos":"n.","zh":"花蜜"},"abdomen":{"pos":"n.","zh":"腹部"},"vibrating":{"pos":"v-ing","zh":"正在振動"},"gravity":{"pos":"n.","zh":"重力、地心引力"},"duration":{"pos":"n.","zh":"持續時間"},"approximately":{"pos":"adv.","zh":"大約、大概"},"decades":{"pos":"n.","zh":"數十年（複數）"},"decoding":{"pos":"v-ing","zh":"解碼、破譯"},"coordinates":{"pos":"n.","zh":"座標（複數）"},"picky":{"pos":"adj.","zh":"挑剔的、吹毛求疵的"},"diner":{"pos":"n.","zh":"食客、用餐者"},"greasy":{"pos":"adj.","zh":"油膩的"},"spiteful":{"pos":"adj.","zh":"懷恨的、惡意的"},"brittle":{"pos":"adj.","zh":"易碎的、脆硬的"},"astonishment":{"pos":"n.","zh":"震驚、大為驚訝"},"patrons":{"pos":"n.","zh":"顧客、老主顧（複數）"},"signature":{"pos":"adj.","zh":"招牌的、代表性的"},"sparking":{"pos":"v-ing","zh":"引發、激發"},"bagel":{"pos":"n.","zh":"貝果麵包"},"croissant":{"pos":"n.","zh":"可頌麵包"},"concession":{"pos":"n.","zh":"影城販賣部、特許"},"destination":{"pos":"n.","zh":"目的地"},"overweight":{"pos":"adj.","zh":"超重的；n. 超重"},"flying":{"pos":"詞彙","zh":"正在飛行"},"houses":{"pos":"詞彙","zh":"房屋"},"under":{"pos":"詞彙","zh":"在...下方"},"door":{"pos":"詞彙","zh":"門"},"won":{"pos":"詞彙","zh":"贏得(win之過去式)"},"freeway":{"pos":"詞彙","zh":"高速公路"},"chicken":{"pos":"n.","zh":"雞肉、小雞"},"cook":{"pos":"詞彙","zh":"烹煮"},"taste":{"pos":"詞彙","zh":"品嚐"},"blow":{"pos":"詞彙","zh":"吹氣"},"soup":{"pos":"詞彙","zh":"湯"},"theater":{"pos":"詞彙","zh":"電影院"},"difficulties":{"pos":"詞彙","zh":"困難"},"mind":{"pos":"詞彙","zh":"介意"},"nervous":{"pos":"詞彙","zh":"緊張的"},"believe":{"pos":"詞彙","zh":"相信"},"volunteer":{"pos":"詞彙","zh":"志工"},"assistants":{"pos":"詞彙","zh":"助手/助理"},"support":{"pos":"詞彙","zh":"支持/支援"},"brother":{"pos":"n.","zh":"兄弟、哥哥、弟弟"},"happy":{"pos":"adj.","zh":"快樂的、高興的"},"teachers":{"pos":"n.","zh":"老師們（複數）"},"a":{"pos":"art.","zh":"一（個、隻、本）"},"able":{"pos":"adj.","zh":"能夠的、有能力的"},"about":{"pos":"prep.","zh":"關於；adv. 大約"},"accidentally":{"pos":"adv.","zh":"意外地、偶然地"},"according":{"pos":"prep.","zh":"根據、按照"},"across":{"pos":"prep.","zh":"穿過、橫越、在…對面"},"adapting":{"pos":"v.","zh":"適應、改編（現在分詞）"},"advice":{"pos":"n.","zh":"建議、忠告（不可數）"},"after":{"pos":"prep.","zh":"在…之後；conj. 在…之後"},"afternoon":{"pos":"n.","zh":"下午、午後"},"again":{"pos":"adv.","zh":"再一次、又"},"against":{"pos":"prep.","zh":"反對、倚靠、防範"},"agrees":{"pos":"v.","zh":"同意（三單形式）"},"ai":{"pos":"n.","zh":"人工智慧 (AI)"},"air":{"pos":"n.","zh":"空氣、空中"},"alarm":{"pos":"n.","zh":"鬧鐘、警報；v. 使驚恐"},"alex":{"pos":"專名","zh":"人名（亞歷克斯）"},"all":{"pos":"adj.","zh":"全部的、所有的；pron. 全部"},"allow":{"pos":"v.","zh":"允許、准許"},"alone":{"pos":"adj.","zh":"獨自一人的；adv. 單獨"},"along":{"pos":"prep.","zh":"沿著、順著；adv. 一起"},"already":{"pos":"adv.","zh":"已經"},"also":{"pos":"adv.","zh":"也、並且"},"altogether":{"pos":"adv.","zh":"完全地、總共"},"am":{"pos":"v.","zh":"是（第一人稱單數現在式）"},"american":{"pos":"adj.","zh":"美國的；n. 美國人"},"among":{"pos":"prep.","zh":"在…之中（三者以上）"},"amy":{"pos":"專名","zh":"人名（艾咪）"},"an":{"pos":"art.","zh":"一（個，用於母音開頭前）"},"and":{"pos":"conj.","zh":"和、而且、那麼"},"andy":{"pos":"專名","zh":"人名（安迪）"},"angry":{"pos":"adj.","zh":"生氣的、憤怒的"},"anna":{"pos":"專名","zh":"人名（安娜）"},"annual":{"pos":"adj.","zh":"每年的、年度的"},"another":{"pos":"adj.","zh":"另一個的；pron. 另一個"},"answers":{"pos":"n.","zh":"答案（複數）；v. 回答（三單）"},"any":{"pos":"adj.","zh":"任何的；pron. 任何"},"anymore":{"pos":"adv.","zh":"再也（不用於否定句）"},"application":{"pos":"n.","zh":"應用、申請、應用程式"},"are":{"pos":"v.","zh":"是（複數/第二人稱現在式）"},"arm":{"pos":"n.","zh":"手臂、臂膀"},"arrange":{"pos":"v.","zh":"安排、整理、排列"},"arriving":{"pos":"v.","zh":"抵達、到達（現在分詞）"},"art":{"pos":"n.","zh":"藝術、美術"},"as":{"pos":"prep.","zh":"作為；conj. 當…時、如同"},"ask":{"pos":"v.","zh":"問、詢問、要求"},"asked":{"pos":"v.","zh":"詢問、要求（過去式）"},"assembled":{"pos":"v.","zh":"組裝、集合（過去式）"},"assembling":{"pos":"v.","zh":"組裝中（現在分詞）"},"assembly":{"pos":"n.","zh":"集會、裝配、組件"},"at":{"pos":"prep.","zh":"在（某地點/時刻）"},"attending":{"pos":"v.","zh":"參加、出席（現在分詞）"},"attitude":{"pos":"n.","zh":"態度、看法"},"author":{"pos":"n.","zh":"作者、作家"},"automated":{"pos":"adj.","zh":"自動化的"},"avoid":{"pos":"v.","zh":"避免、避開"},"avoided":{"pos":"v.","zh":"避免了（過去式）"},"away":{"pos":"adv.","zh":"離開、遠離"},"baby":{"pos":"n.","zh":"嬰兒、寶貝"},"back":{"pos":"adv.","zh":"回原處；n. 背部；adj. 後面的"},"background":{"pos":"n.","zh":"背景、經歷"},"backpack":{"pos":"n.","zh":"後背包、雙肩包"},"bad":{"pos":"adj.","zh":"壞的、不好的、差的"},"bags":{"pos":"n.","zh":"袋子、包包（複數）"},"baking":{"pos":"v.","zh":"烘烤；n. 烘焙"},"basic":{"pos":"adj.","zh":"基礎的、基本的"},"be":{"pos":"v.","zh":"是、成為、存在（動詞原形）"},"becoming":{"pos":"v.","zh":"變成、成為（現在分詞）"},"bedroom":{"pos":"n.","zh":"臥室、睡房"},"been":{"pos":"v.","zh":"是、去過（be之過去分詞）"},"bees":{"pos":"n.","zh":"蜜蜂（複數）"},"before":{"pos":"prep.","zh":"在…之前；conj. 在…之前"},"behavior":{"pos":"n.","zh":"行為、舉止"},"behind":{"pos":"prep.","zh":"在…後面；adv. 落後"},"being":{"pos":"v.","zh":"存在、處於（be之現在分詞）"},"below":{"pos":"prep.","zh":"在…下方、低於"},"bend":{"pos":"v.","zh":"彎曲、彎腰"},"benefit":{"pos":"n.","zh":"好處、利益；v. 有益於"},"best":{"pos":"adj.","zh":"最好的；adv. 最"},"between":{"pos":"prep.","zh":"在…兩者之間"},"bicycle":{"pos":"n.","zh":"腳踏車、自行車"},"big":{"pos":"adj.","zh":"大的、重大的"},"bird":{"pos":"n.","zh":"鳥、禽"},"birthday":{"pos":"n.","zh":"生日"},"birthdays":{"pos":"n.","zh":"生日（複數）"},"black":{"pos":"adj.","zh":"黑色的；n. 黑色"},"bloom":{"pos":"v.","zh":"開花、盛開；n. 花朵"},"blooming":{"pos":"adj.","zh":"盛開的；v. 開花中"},"blue":{"pos":"adj.","zh":"藍色的；n. 藍色；adj. 憂鬱的"},"board":{"pos":"n.","zh":"板子、董事會；v. 登機/車"},"boat":{"pos":"n.","zh":"小船、艇"},"bodies":{"pos":"n.","zh":"身體、軀體（複數）"},"body":{"pos":"n.","zh":"身體、肉體"},"books":{"pos":"n.","zh":"書籍（複數）；v. 預訂（三單）"},"bookstore":{"pos":"n.","zh":"書店"},"both":{"pos":"pron.","zh":"兩者都；adj. 兩方的"},"boy":{"pos":"n.","zh":"男孩、少年"},"brain":{"pos":"n.","zh":"大腦、腦力"},"briefly":{"pos":"adv.","zh":"簡短地、短暫地"},"bright":{"pos":"adj.","zh":"明亮的、聰明的"},"brightly":{"pos":"adv.","zh":"明亮地、燦爛地"},"broken":{"pos":"adj.","zh":"破碎的、損壞的（break之p.p.）"},"brown":{"pos":"adj.","zh":"棕色的、褐色的"},"bubble":{"pos":"n.","zh":"氣泡、泡沫"},"build":{"pos":"v.","zh":"建造、建立"},"building":{"pos":"n.","zh":"建築物、大樓；v. 建造中"},"built":{"pos":"v.","zh":"建造（build之過去式/分詞）"},"but":{"pos":"conj.","zh":"但是、可是、然而"},"buying":{"pos":"v.","zh":"購買中（現在分詞）"},"by":{"pos":"prep.","zh":"藉由、被、在…旁邊"},"cad":{"pos":"n.","zh":"電腦輔助設計 (CAD)"},"caf":{"pos":"n.","zh":"咖啡廳、小餐館"},"cafe":{"pos":"n.","zh":"咖啡店、咖啡館"},"calls":{"pos":"v.","zh":"打電話、稱呼（三單）；n. 電話"},"calm":{"pos":"adj.","zh":"平靜的、鎮定的；v. 使冷靜"},"came":{"pos":"v.","zh":"來、來到（come之過去式）"},"cameras":{"pos":"n.","zh":"相機、攝影機（複數）"},"camping":{"pos":"n.","zh":"露營活動"},"can":{"pos":"aux.","zh":"能夠、可以；n. 罐頭"},"cannot":{"pos":"aux.","zh":"不能、無法"},"captured":{"pos":"v.","zh":"捕獲、拍攝捕捉到（過去式）"},"car":{"pos":"n.","zh":"汽車、轎車"},"care":{"pos":"v.","zh":"關心、在乎；n. 照顧"},"careful":{"pos":"adj.","zh":"小心的、仔細的"},"carefully":{"pos":"adv.","zh":"小心地、仔細地"},"carry":{"pos":"v.","zh":"隨身攜帶、攜帶"},"cash":{"pos":"n.","zh":"現金、現款"},"cats":{"pos":"n.","zh":"貓咪（複數）"},"caused":{"pos":"v.","zh":"造成、引起（過去式）"},"cemeteries":{"pos":"n.","zh":"墓園、公墓（複數）"},"chairs":{"pos":"n.","zh":"椅子（複數）"},"challenges":{"pos":"n.","zh":"挑戰（複數）；v. 挑戰（三單）"},"chance":{"pos":"n.","zh":"機會、可能性"},"change":{"pos":"v.","zh":"改變；n. 變化、零錢"},"characteristic":{"pos":"n.","zh":"特徵、特色；adj. 特有的"},"charge":{"pos":"v.","zh":"收費、充電；n. 費用"},"cheap":{"pos":"adj.","zh":"便宜的、廉價的"},"check":{"pos":"v.","zh":"檢查、核對；n. 支票"},"checked":{"pos":"v.","zh":"檢查過（過去式）"},"checks":{"pos":"v.","zh":"檢查（三單）；n. 支票"},"chefs":{"pos":"n.","zh":"主廚、廚師們（複數）"},"child":{"pos":"n.","zh":"小孩、兒童（單數）"},"chinese":{"pos":"adj.","zh":"中國的、中文的；n. 中文"},"chip":{"pos":"n.","zh":"晶片、洋芋片"},"chocolate":{"pos":"n.","zh":"巧克力"},"choice":{"pos":"n.","zh":"選擇、抉擇"},"choosing":{"pos":"v.","zh":"選擇中（現在分詞）"},"chose":{"pos":"v.","zh":"選擇（choose之過去式）"},"chris":{"pos":"專名","zh":"人名（克里斯）"},"cities":{"pos":"n.","zh":"城市（複數）"},"city":{"pos":"n.","zh":"城市、都市"},"classes":{"pos":"n.","zh":"班級、課程（複數）"},"classmate":{"pos":"n.","zh":"同班同學"},"classroom":{"pos":"n.","zh":"教室"},"clean":{"pos":"adj.","zh":"乾淨的；v. 打掃、清理"},"cleaned":{"pos":"v.","zh":"打掃了（過去式）"},"clear":{"pos":"adj.","zh":"清楚的、晴朗的；v. 清除"},"clearly":{"pos":"adv.","zh":"清楚地、顯然地"},"clerk":{"pos":"n.","zh":"店員、辦事員"},"click":{"pos":"v.","zh":"點擊、按一下；n. 喀噠聲"},"client":{"pos":"n.","zh":"客戶、委託人"},"climbed":{"pos":"v.","zh":"攀爬（過去式）"},"clocks":{"pos":"n.","zh":"時鐘（複數）"},"clubs":{"pos":"n.","zh":"社團、俱樂部（複數）"},"cnc":{"pos":"n.","zh":"數值控制工具機 (CNC)"},"coding":{"pos":"n.","zh":"寫程式、編程"},"college":{"pos":"n.","zh":"大學、學院"},"combo":{"pos":"n.","zh":"套餐、組合"},"come":{"pos":"v.","zh":"來、來到"},"comes":{"pos":"v.","zh":"來（三單形式）"},"comfort":{"pos":"n.","zh":"安慰、舒適；v. 撫慰"},"comforting":{"pos":"adj.","zh":"令人感到安慰的"},"coming":{"pos":"v.","zh":"即將到來的；v. 來（現在分詞）"},"common":{"pos":"adj.","zh":"常見的、普遍的、共同的"},"communicate":{"pos":"v.","zh":"溝通、交流"},"company":{"pos":"n.","zh":"公司、陪伴"},"competitions":{"pos":"n.","zh":"競賽、比賽（複數）"},"concern":{"pos":"n.","zh":"擔憂、關心；v. 涉及"},"conditions":{"pos":"n.","zh":"情況、條件（複數）"},"conducted":{"pos":"v.","zh":"進行、實施（過去式）"},"consider":{"pos":"v.","zh":"考慮、認為"},"considered":{"pos":"v.","zh":"被認為、考慮過（過去式）"},"control":{"pos":"v.","zh":"控制、掌握；n. 控制"},"controls":{"pos":"v.","zh":"控制（三單形式）"},"conversation":{"pos":"n.","zh":"對話、交談"},"cooked":{"pos":"v.","zh":"煮、烹飪過（過去式）"},"cookie":{"pos":"n.","zh":"餅乾、小甜餅"},"cool":{"pos":"adj.","zh":"涼爽的、酷炫的"},"costs":{"pos":"n.","zh":"費用；v. 花費（三單）"},"could":{"pos":"aux.","zh":"能夠、可以（can之過去式）"},"couldn":{"pos":"aux.","zh":"不能（could not 之簡寫）"},"countries":{"pos":"n.","zh":"國家（複數）"},"country":{"pos":"n.","zh":"國家、鄉村"},"courses":{"pos":"n.","zh":"課程、路線（複數）"},"crash":{"pos":"v.","zh":"碰撞、墜毀；n. 車禍撞擊"},"created":{"pos":"v.","zh":"創造、建立（過去式）"},"cross":{"pos":"v.","zh":"穿過、跨越；n. 十字架"},"crosswalk":{"pos":"n.","zh":"斑馬線、行人穿越道"},"crum":{"pos":"n.","zh":"碎屑、碎渣"},"crushed":{"pos":"v.","zh":"壓碎、鎮壓（過去式）"},"cultural":{"pos":"adj.","zh":"文化的、人文的"},"cultures":{"pos":"n.","zh":"文化（複數）"},"cup":{"pos":"n.","zh":"杯子、獎盃"},"customs":{"pos":"n.","zh":"習俗、海關"},"cutting":{"pos":"v.","zh":"切割；adj. 銳利的"},"danger":{"pos":"n.","zh":"危險、危難"},"dark":{"pos":"adj.","zh":"黑暗的、深色的"},"date":{"pos":"n.","zh":"日期、約會；v. 約會"},"davis":{"pos":"專名","zh":"人名（戴維斯）"},"day":{"pos":"n.","zh":"白天、一天、日子"},"days":{"pos":"n.","zh":"天數、日子（複數）"},"deal":{"pos":"n.","zh":"交易、處理；v. 處理"},"decides":{"pos":"v.","zh":"決定（三單形式）"},"deeply":{"pos":"adv.","zh":"深刻地、深深地"},"definitely":{"pos":"adv.","zh":"肯定地、明確地"},"deliciously":{"pos":"adv.","zh":"美味地、可口地"},"deliver":{"pos":"v.","zh":"遞送、發表演說"},"dentist":{"pos":"n.","zh":"牙醫"},"depending":{"pos":"prep.","zh":"取決於、依賴"},"depress":{"pos":"v.","zh":"使沮喪、使蕭條"},"depressed":{"pos":"adj.","zh":"感到沮喪的、憂鬱的"},"depressing":{"pos":"adj.","zh":"令人沮喪消沉的"},"depression":{"pos":"n.","zh":"憂鬱症、蕭條"},"description":{"pos":"n.","zh":"描述、描寫"},"design":{"pos":"n.","zh":"設計；v. 設計、構思"},"despite":{"pos":"prep.","zh":"儘管、不管"},"develop":{"pos":"v.","zh":"發展、培養、研發"},"developed":{"pos":"v.","zh":"發展出的；adj. 已開發的"},"developing":{"pos":"adj.","zh":"發展中的；v. 研發中"},"diagram":{"pos":"n.","zh":"圖表、示意圖"},"did":{"pos":"aux.","zh":"做了（do之過去式）"},"didn":{"pos":"aux.","zh":"沒有（did not 之簡寫）"},"differences":{"pos":"n.","zh":"差異、不同之處（複數）"},"different":{"pos":"adj.","zh":"不同的、相異的"},"difficult":{"pos":"adj.","zh":"困難的、不易的"},"diners":{"pos":"n.","zh":"用餐顧客們（複數）"},"dinosaur":{"pos":"n.","zh":"恐龍"},"direct":{"pos":"adj.","zh":"直接的；v. 指導、導演"},"disappoint":{"pos":"v.","zh":"使失望"},"disappointed":{"pos":"adj.","zh":"感到失望的"},"disappointing":{"pos":"adj.","zh":"令人失望的"},"disappointment":{"pos":"n.","zh":"失望、挫折"},"discuss":{"pos":"v.","zh":"討論、商議"},"discussed":{"pos":"v.","zh":"討論過（過去式）"},"discussing":{"pos":"v.","zh":"討論中（現在分詞）"},"diseases":{"pos":"n.","zh":"疾病（複數）"},"distant":{"pos":"adj.","zh":"遙遠的、遠距的"},"do":{"pos":"v.","zh":"做；aux. 助動詞"},"doctor":{"pos":"n.","zh":"醫生、博士"},"does":{"pos":"aux.","zh":"做（三單助動詞）"},"doesn":{"pos":"aux.","zh":"不（does not 之簡寫）"},"dog":{"pos":"n.","zh":"狗、犬"},"dogs":{"pos":"n.","zh":"狗狗們（複數）"},"doing":{"pos":"v.","zh":"做（現在分詞）"},"dollars":{"pos":"n.","zh":"元、美元（複數）"},"don":{"pos":"aux.","zh":"不（do not 之簡寫）"},"done":{"pos":"v.","zh":"完成、做了（do之p.p.）"},"double":{"pos":"adj.","zh":"雙重的、兩倍的"},"down":{"pos":"adv.","zh":"向下、朝下；prep. 沿著…而下"},"drink":{"pos":"v.","zh":"喝、飲用；n. 飲料"},"drinking":{"pos":"v.","zh":"飲用中；n. 飲酒"},"drinks":{"pos":"n.","zh":"飲料（複數）；v. 喝（三單）"},"drivers":{"pos":"n.","zh":"駕駛員、司機們（複數）"},"driving":{"pos":"v.","zh":"開車、駕駛中"},"drone":{"pos":"n.","zh":"無人機、雄蜂"},"drop":{"pos":"v.","zh":"落下、滴下；n. 一滴"},"drunk":{"pos":"adj.","zh":"喝醉的；v. 喝過（drink之p.p.）"},"due":{"pos":"adj.","zh":"到期的、應付的"},"during":{"pos":"prep.","zh":"在…期間"},"each":{"pos":"adj.","zh":"每個的；pron. 每個"},"earlier":{"pos":"adv.","zh":"更早地；adj. 較早的"},"eat":{"pos":"v.","zh":"吃、進食"},"eating":{"pos":"v.","zh":"吃東西中（現在分詞）"},"economy":{"pos":"n.","zh":"經濟、經濟制度"},"ed":{"pos":"n.","zh":"教育 (Ed)；動詞過去分詞字尾"},"effective":{"pos":"adj.","zh":"有效的、產生效果的"},"effort":{"pos":"n.","zh":"努力、心血"},"either":{"pos":"conj.","zh":"或者；adv. 也不（用於否定）"},"elder":{"pos":"adj.","zh":"年長的、長輩的"},"electric":{"pos":"adj.","zh":"電力的、電動的"},"emma":{"pos":"專名","zh":"人名（艾瑪）"},"emotion":{"pos":"n.","zh":"情緒、情感"},"emotions":{"pos":"n.","zh":"情緒、情感（複數）"},"enemies":{"pos":"n.","zh":"敵人、仇敵（複數）"},"enemy":{"pos":"n.","zh":"敵人、敵方"},"energy":{"pos":"n.","zh":"精力、能量、活力"},"engine":{"pos":"n.","zh":"引擎、發動機"},"engineer":{"pos":"n.","zh":"工程師"},"engineers":{"pos":"n.","zh":"工程師們（複數）"},"english":{"pos":"n.","zh":"英文、英語；adj. 英國的"},"enjoyed":{"pos":"v.","zh":"享受、喜愛（過去式）"},"entire":{"pos":"adj.","zh":"整個的、全部的"},"environment":{"pos":"n.","zh":"環境、大自然"},"european":{"pos":"adj.","zh":"歐洲的；n. 歐洲人"},"evaluate":{"pos":"v.","zh":"評估、評價"},"evaluating":{"pos":"v.","zh":"評估中（現在分詞）"},"even":{"pos":"adv.","zh":"甚至、即使；adj. 平局的"},"evening":{"pos":"n.","zh":"傍晚、晚上"},"ever":{"pos":"adv.","zh":"曾經、從來"},"everywhere":{"pos":"adv.","zh":"到處、處處"},"exact":{"pos":"adj.","zh":"確切的、精確的"},"exam":{"pos":"n.","zh":"考試、測驗"},"exams":{"pos":"n.","zh":"考試（複數）"},"excitedly":{"pos":"adv.","zh":"興奮地、激動地"},"excitement":{"pos":"n.","zh":"興奮、刺激感"},"excites":{"pos":"v.","zh":"使興奮（三單形式）"},"excuse":{"pos":"n.","zh":"藉口；v. 原諒"},"excuses":{"pos":"n.","zh":"藉口（複數）"},"executive":{"pos":"n.","zh":"主管、高階主管；adj. 執行的"},"exercise":{"pos":"n.","zh":"運動、練習；v. 運動"},"expensive":{"pos":"adj.","zh":"昂貴的、高價的"},"experienced":{"pos":"adj.","zh":"有經驗的、熟練的"},"experiment":{"pos":"n./v.","zh":"實驗；進行實驗"},"expert":{"pos":"n.","zh":"專家、行家"},"external":{"pos":"adj.","zh":"外在的、外部的"},"extra":{"pos":"adj.","zh":"額外的、外加的"},"eye":{"pos":"n.","zh":"眼睛、眼光"},"eyes":{"pos":"n.","zh":"眼睛（複數）"},"faced":{"pos":"v.","zh":"面對、面臨（過去式）"},"facing":{"pos":"v.","zh":"面臨、朝向（現在分詞）"},"factory":{"pos":"n.","zh":"工廠、製造廠"},"fair":{"pos":"adj.","zh":"公平的；n. 博覽會、市集"},"falling":{"pos":"v.","zh":"落下、跌倒（現在分詞）"},"family":{"pos":"n.","zh":"家庭、家人"},"fans":{"pos":"n.","zh":"粉絲、風扇（複數）"},"far":{"pos":"adv.","zh":"遠遠地；adj. 遙遠的"},"fastest":{"pos":"adj.","zh":"最快速的；adv. 最快地"},"father":{"pos":"n.","zh":"父親、爸爸"},"fee":{"pos":"n.","zh":"費用、手續費"},"feel":{"pos":"v.","zh":"感覺、體會到"},"feelings":{"pos":"n.","zh":"感受、心情、感情（複數）"},"feels":{"pos":"v.","zh":"感覺到（三單形式）"},"felt":{"pos":"v.","zh":"感到（feel之過去式/分詞）"},"field":{"pos":"n.","zh":"領域、田野、運動場"},"fierce":{"pos":"adj.","zh":"兇猛的、激烈的"},"fifty":{"pos":"n.","zh":"五十"},"fight":{"pos":"v.","zh":"打架、搏鬥；n. 戰鬥"},"fighting":{"pos":"v.","zh":"對抗中、奮鬥中"},"finally":{"pos":"adv.","zh":"終於、最後"},"financial":{"pos":"adj.","zh":"財務的、金融的"},"find":{"pos":"v.","zh":"找到、發現、覺得"},"finding":{"pos":"n.","zh":"發現、調查結果"},"finds":{"pos":"v.","zh":"發現、覺得（三單形式）"},"fire":{"pos":"n.","zh":"火、火災；v. 開火、開除"},"firms":{"pos":"n.","zh":"商行、公司（複數）"},"first":{"pos":"adj.","zh":"第一的；adv. 首先"},"five":{"pos":"n.","zh":"五"},"flash":{"pos":"n.","zh":"閃光；v. 閃爍"},"flew":{"pos":"v.","zh":"飛行（fly之過去式）"},"flexibly":{"pos":"adv.","zh":"靈活地、有彈性地"},"flies":{"pos":"v.","zh":"飛行（三單）；n. 蒼蠅（複數）"},"flow":{"pos":"v.","zh":"流動；n. 語流、水流"},"flowers":{"pos":"n.","zh":"花朵（複數）"},"fluently":{"pos":"adv.","zh":"流利地、流暢地"},"fly":{"pos":"v.","zh":"飛翔、飛行；n. 蒼蠅"},"fog":{"pos":"n.","zh":"霧氣、濃霧"},"follow":{"pos":"v.","zh":"跟隨、遵守、理解"},"followed":{"pos":"v.","zh":"跟隨了（過去式）"},"following":{"pos":"adj.","zh":"接下來的；prep. 在…之後"},"follows":{"pos":"v.","zh":"跟隨（三單形式）"},"food":{"pos":"n.","zh":"食物、食品"},"for":{"pos":"prep.","zh":"為、給、持續達"},"foreigners":{"pos":"n.","zh":"外國人（複數）"},"form":{"pos":"n.","zh":"形式、表格；v. 形成"},"formal":{"pos":"adj.","zh":"正式的、拘謹的"},"forming":{"pos":"v.","zh":"形成中（現在分詞）"},"forty":{"pos":"n.","zh":"四十"},"forward":{"pos":"adv.","zh":"向前、朝前"},"fossils":{"pos":"n.","zh":"化石（複數）"},"found":{"pos":"v.","zh":"找到（find之過去式/分詞）"},"free":{"pos":"adj.","zh":"自由的、免費的、有空的"},"french":{"pos":"adj.","zh":"法國的、法語的；n. 法語"},"fresh":{"pos":"adj.","zh":"新鮮的、清新的"},"fried":{"pos":"adj.","zh":"油炸的、油煎的"},"from":{"pos":"prep.","zh":"從、來自"},"fruit":{"pos":"n.","zh":"水果"},"full":{"pos":"adj.","zh":"充滿的、飽的、完整的"},"funerals":{"pos":"n.","zh":"喪禮、葬禮（複數）"},"gained":{"pos":"v.","zh":"獲得、增加（過去式）"},"gate":{"pos":"n.","zh":"大門、登機門"},"gave":{"pos":"v.","zh":"給予（give之過去式）"},"generally":{"pos":"adv.","zh":"一般而言、通常"},"gentle":{"pos":"adj.","zh":"溫和的、輕柔的"},"george":{"pos":"專名","zh":"人名（喬治）"},"gift":{"pos":"n.","zh":"禮物、天賦"},"gifts":{"pos":"n.","zh":"禮物（複數）"},"give":{"pos":"v.","zh":"給予、付出"},"given":{"pos":"v.","zh":"給予（give之p.p.）；prep. 考慮到"},"gives":{"pos":"v.","zh":"給予（三單形式）"},"giving":{"pos":"v.","zh":"給予（現在分詞）"},"global":{"pos":"adj.","zh":"全球的、全世界的"},"go":{"pos":"v.","zh":"去、走、進行"},"going":{"pos":"v.","zh":"去（現在分詞）；即將"},"gone":{"pos":"v.","zh":"離去、去了（go之p.p.）"},"good":{"pos":"adj.","zh":"好的、優秀的"},"graduates":{"pos":"n.","zh":"畢業生（複數）；v. 畢業（三單）"},"graduating":{"pos":"v.","zh":"畢業（現在分詞）"},"grandma":{"pos":"n.","zh":"奶奶、外婆"},"graphic":{"pos":"adj.","zh":"圖表的、生動的；n. 圖形"},"greatest":{"pos":"adj.","zh":"最偉大的、最大的"},"green":{"pos":"adj.","zh":"綠色的；n. 綠色"},"greenfield":{"pos":"專名","zh":"地名（綠地/格林菲爾德）"},"group":{"pos":"n.","zh":"團體、群組"},"guide":{"pos":"n.","zh":"指南、導遊；v. 引導"},"gym":{"pos":"n.","zh":"體育館、健身房"},"had":{"pos":"v.","zh":"有、度過（have之過去式/分詞）"},"hall":{"pos":"n.","zh":"大廳、禮堂、走廊"},"hand":{"pos":"n.","zh":"手；v. 遞交"},"handle":{"pos":"v.","zh":"處理、操縱；n. 把手"},"hard":{"pos":"adj.","zh":"困難的、堅硬的；adv. 努力地"},"hardly":{"pos":"adv.","zh":"幾乎不（否定副詞）"},"harms":{"pos":"v.","zh":"傷害（三單）；n. 害處"},"harry":{"pos":"專名","zh":"人名（哈利）"},"hasn":{"pos":"aux.","zh":"沒有（has not 之簡寫）"},"hates":{"pos":"v.","zh":"討厭、痛恨（三單形式）"},"having":{"pos":"v.","zh":"擁有、享用（現在分詞）"},"he":{"pos":"pron.","zh":"他（主格）"},"head":{"pos":"n.","zh":"頭部、首長；v. 朝向"},"healthy":{"pos":"adj.","zh":"健康的、健壯的"},"hear":{"pos":"v.","zh":"聽見、得知"},"heard":{"pos":"v.","zh":"聽見了（hear之過去式/分詞）"},"heating":{"pos":"n.","zh":"暖氣設備、加熱"},"heavier":{"pos":"adj.","zh":"較重的（比較級）"},"heavily":{"pos":"adv.","zh":"沉重地、劇烈地（如傾盆大雨）"},"heavy":{"pos":"adj.","zh":"沉重的、大量的"},"helped":{"pos":"v.","zh":"幫助過（過去式）"},"her":{"pos":"pron.","zh":"她（受格/所有格）"},"here":{"pos":"adv.","zh":"在這裡、此處"},"hide":{"pos":"v.","zh":"躲藏、隱藏"},"hides":{"pos":"v.","zh":"躲藏（三單形式）"},"high":{"pos":"adj.","zh":"高的、高級的；adv. 高高地"},"higher":{"pos":"adj.","zh":"較高的；adv. 較高地"},"highest":{"pos":"adj.","zh":"最高的；adv. 最高地"},"him":{"pos":"pron.","zh":"他（受格）"},"his":{"pos":"pron.","zh":"他的（所有格）"},"history":{"pos":"n.","zh":"歷史、歷程"},"hit":{"pos":"v.","zh":"打擊、碰撞；n. 成功暢銷作品"},"hive":{"pos":"n.","zh":"蜂巢、蜂窩"},"holds":{"pos":"v.","zh":"握住、舉辦（三單形式）"},"home":{"pos":"n.","zh":"家；adv. 在家、回家的"},"honey":{"pos":"n.","zh":"蜂蜜、親愛的"},"honeybees":{"pos":"n.","zh":"蜜蜂們（複數）"},"honnold":{"pos":"專名","zh":"人名（霍諾德，攀岩家）"},"honor":{"pos":"n.","zh":"榮譽、光榮；v. 表彰"},"hot":{"pos":"adj.","zh":"炎熱的、熱門的、辣的"},"hottest":{"pos":"adj.","zh":"最炎熱的、最搶手的"},"how":{"pos":"adv.","zh":"如何、怎樣、多麼"},"i":{"pos":"pron.","zh":"我（第一人稱主格）"},"idea":{"pos":"n.","zh":"點子、想法、主意"},"identify":{"pos":"v.","zh":"辨識、確認"},"if":{"pos":"conj.","zh":"如果、假如；是否"},"immediately":{"pos":"adv.","zh":"立刻、馬上"},"impact":{"pos":"n.","zh":"衝擊、影響；v. 衝擊"},"importance":{"pos":"n.","zh":"重要性"},"improve":{"pos":"v.","zh":"改善、進步、增進"},"improved":{"pos":"adj.","zh":"改進的；v. 改善了"},"improvement":{"pos":"n.","zh":"進步、改善"},"improving":{"pos":"v.","zh":"改善中（現在分詞）"},"in":{"pos":"prep.","zh":"在…之內、在…之中"},"increase":{"pos":"v.","zh":"增加、增長；n. 增加"},"indicate":{"pos":"v.","zh":"指出、指示、象徵"},"infer":{"pos":"v.","zh":"推論、推斷"},"information":{"pos":"n.","zh":"資訊、消息（不可數）"},"ing":{"pos":"n.","zh":"現在分詞 / 動名詞字尾"},"initial":{"pos":"adj.","zh":"最初的、開頭的"},"injuries":{"pos":"n.","zh":"傷勢、傷害（複數）"},"insects":{"pos":"n.","zh":"昆蟲（複數）"},"inside":{"pos":"prep.","zh":"在…裡面；adv. 在內部"},"instead":{"pos":"adv.","zh":"反而、替代"},"interestingly":{"pos":"adv.","zh":"有趣地、耐人尋味地"},"interests":{"pos":"v.","zh":"引起興趣（三單）；n. 興趣"},"international":{"pos":"adj.","zh":"國際的、全球的"},"internet":{"pos":"n.","zh":"網際網路、網路"},"internship":{"pos":"n.","zh":"實習、實習期"},"into":{"pos":"prep.","zh":"進入…之中、成為"},"iron":{"pos":"n.","zh":"鐵、熨斗；v. 熨燙"},"is":{"pos":"v.","zh":"是（第三人稱單數現在式）"},"isn":{"pos":"v.","zh":"不是（is not 之簡寫）"},"it":{"pos":"pron.","zh":"它（第三人稱單數主格/受格）"},"its":{"pos":"pron.","zh":"它的（所有格）"},"jade":{"pos":"n.","zh":"玉石、翡翠"},"jenny":{"pos":"專名","zh":"人名（珍妮）"},"jo":{"pos":"專名","zh":"人名（喬）"},"job":{"pos":"n.","zh":"工作、職位"},"joining":{"pos":"v.","zh":"加入、參與（現在分詞）"},"joy":{"pos":"n.","zh":"喜悅、樂趣"},"juicy":{"pos":"adj.","zh":"多汁的、多汁美味的"},"junior":{"pos":"adj.","zh":"初級的、年少的；n. 後輩"},"just":{"pos":"adv.","zh":"只是、剛剛、正好"},"keelung":{"pos":"專名","zh":"基隆"},"keep":{"pos":"v.","zh":"保持、繼續、保留"},"kg":{"pos":"n.","zh":"公斤 (kilogram)"},"kind":{"pos":"adj.","zh":"親切仁慈的；n. 種類"},"king":{"pos":"n.","zh":"國王、君王"},"kitchen":{"pos":"n.","zh":"廚房"},"knee":{"pos":"n.","zh":"膝蓋"},"knew":{"pos":"v.","zh":"知道、認識（know之過去式）"},"knives":{"pos":"n.","zh":"刀子（knife之複數）"},"know":{"pos":"v.","zh":"知道、懂得、認識"},"knowing":{"pos":"v.","zh":"知道（現在分詞）"},"knows":{"pos":"v.","zh":"知道（三單形式）"},"labor":{"pos":"n.","zh":"勞工、勞動；v. 辛勤工作"},"language":{"pos":"n.","zh":"語言、言語"},"large":{"pos":"adj.","zh":"大的、寬廣的"},"latin":{"pos":"adj.","zh":"拉丁語的、拉丁的"},"latte":{"pos":"n.","zh":"拿鐵咖啡"},"launch":{"pos":"v.","zh":"推出、發射；n. 發表會"},"law":{"pos":"n.","zh":"法律、法令"},"lead":{"pos":"v.","zh":"引導、率領、導致"},"least":{"pos":"adj.","zh":"最少的；adv. 最少、起碼"},"leaving":{"pos":"v.","zh":"離開、遺留（現在分詞）"},"left":{"pos":"v.","zh":"離開（leave之過去式）；adj. 左邊的"},"let":{"pos":"v.","zh":"讓、允許（使役動詞）"},"license":{"pos":"n.","zh":"執照、證照"},"lift":{"pos":"v.","zh":"舉起、抬高；n. 電梯"},"lin":{"pos":"專名","zh":"姓氏（林）"},"lives":{"pos":"v.","zh":"居住、生活（三單）；n. 生命（複數）"},"local":{"pos":"adj.","zh":"當地的、本土的"},"locations":{"pos":"n.","zh":"地點、位置（複數）"},"lockers":{"pos":"n.","zh":"寄物櫃、置物櫃（複數）"},"long":{"pos":"adj.","zh":"長的、長久的；adv. 長久地"},"longer":{"pos":"adj.","zh":"較長的；adv. 不再 (no longer)"},"looking":{"pos":"v.","zh":"看著、注視（現在分詞）"},"looks":{"pos":"v.","zh":"看、看起來（三單形式）"},"lora":{"pos":"專名","zh":"通訊技術 (LoRa) / 人名"},"loud":{"pos":"adj.","zh":"大聲的、響亮的；adv. 大聲地"},"lovely":{"pos":"adj.","zh":"可愛的、美好的"},"lovers":{"pos":"n.","zh":"愛好者、戀人們（複數）"},"loves":{"pos":"v.","zh":"喜愛、深愛（三單形式）"},"luxury":{"pos":"n.","zh":"奢侈品；adj. 奢華的"},"machine":{"pos":"n.","zh":"機器、機械"},"machinery":{"pos":"n.","zh":"機械設備（總稱）"},"made":{"pos":"v.","zh":"製作、使得（make之過去式/分詞）"},"main":{"pos":"adj.","zh":"主要的、首要的"},"mainly":{"pos":"adv.","zh":"主要地、大體上"},"make":{"pos":"v.","zh":"製造、使得（使役動詞）"},"making":{"pos":"v.","zh":"製造中（現在分詞）"},"man":{"pos":"n.","zh":"男人、人類"},"manager":{"pos":"n.","zh":"經理、管理人"},"many":{"pos":"adj.","zh":"許多的（修飾可數名詞）"},"marketing":{"pos":"n.","zh":"行銷、市場營銷"},"math":{"pos":"n.","zh":"數學"},"me":{"pos":"pron.","zh":"我（第一人稱受格）"},"meals":{"pos":"n.","zh":"餐點、三餐（複數）"},"mean":{"pos":"v.","zh":"意指、意味著；adj. 刻薄的"},"means":{"pos":"n.","zh":"手段、方法；v. 意思是（三單）"},"medical":{"pos":"adj.","zh":"醫療的、醫學的"},"meg":{"pos":"專名","zh":"人名（梅格）"},"members":{"pos":"n.","zh":"成員、會員（複數）"},"meters":{"pos":"n.","zh":"公尺（複數）"},"might":{"pos":"aux.","zh":"可能、或許"},"milk":{"pos":"n.","zh":"牛奶"},"milling":{"pos":"n.","zh":"銑削加工、研磨"},"million":{"pos":"n.","zh":"百萬"},"millions":{"pos":"n.","zh":"數以百萬計"},"miss":{"pos":"v.","zh":"想念、錯過；n. 小姐"},"mix":{"pos":"v.","zh":"混合、調配；n. 混合物"},"mixed":{"pos":"adj.","zh":"混合的、複雜交織的"},"mixing":{"pos":"v.","zh":"攪拌混合（現在分詞）"},"modern":{"pos":"adj.","zh":"現代的、當代的"},"mom":{"pos":"n.","zh":"媽媽"},"moment":{"pos":"n.","zh":"片刻、當下時光"},"months":{"pos":"n.","zh":"月份（複數）"},"more":{"pos":"adv.","zh":"更多；adj. 更多的"},"most":{"pos":"adv.","zh":"最；adj. 大多數的"},"mother":{"pos":"n.","zh":"母親、媽媽"},"motivated":{"pos":"adj.","zh":"積極的、有動力的"},"mount":{"pos":"n.","zh":"山峰（用於山名前）"},"mountain":{"pos":"n.","zh":"山、高山"},"mountains":{"pos":"n.","zh":"群山（複數）"},"movie":{"pos":"n.","zh":"電影"},"movies":{"pos":"n.","zh":"電影（複數）"},"moving":{"pos":"adj.","zh":"感人的；v. 移動（現在分詞）"},"mr":{"pos":"n.","zh":"先生 (Mister)"},"mrs":{"pos":"n.","zh":"女士、太太 (Mistress)"},"mrt":{"pos":"n.","zh":"捷運 (Mass Rapid Transit)"},"much":{"pos":"adj.","zh":"許多的（修飾不可數）；adv. 非常"},"must":{"pos":"aux.","zh":"必須、一定"},"my":{"pos":"pron.","zh":"我的（第一人稱所有格）"},"nangang":{"pos":"專名","zh":"南港"},"natural":{"pos":"adj.","zh":"自然的、天然的"},"nature":{"pos":"n.","zh":"大自然、本質"},"navigating":{"pos":"v.","zh":"導航、引導穿行（現在分詞）"},"navy":{"pos":"n.","zh":"海軍、深藍色"},"need":{"pos":"v.","zh":"需要；n. 需求"},"neighborhood":{"pos":"n.","zh":"鄰近地區、社區"},"neither":{"pos":"conj.","zh":"兩者都不；adv. 也不"},"never":{"pos":"adv.","zh":"從不、絕不（否定副詞）"},"new":{"pos":"adj.","zh":"新的、全新的"},"newly":{"pos":"adv.","zh":"新近、最近"},"news":{"pos":"n.","zh":"新聞、消息（不可數）"},"nine":{"pos":"n.","zh":"九"},"no":{"pos":"adv.","zh":"不；adj. 沒有的"},"nobel":{"pos":"專名","zh":"諾貝爾"},"noisy":{"pos":"adj.","zh":"吵鬧的、嘈雜的"},"none":{"pos":"pron.","zh":"毫無、沒有任何人事物"},"nor":{"pos":"conj.","zh":"也不（與 neither 連用）"},"northern":{"pos":"adj.","zh":"北方的、北部的"},"not":{"pos":"adv.","zh":"不、未"},"now":{"pos":"adv.","zh":"現在、此時"},"number":{"pos":"n.","zh":"號碼、數字、數量"},"numbers":{"pos":"n.","zh":"數字、號碼（複數）"},"objects":{"pos":"n.","zh":"物體、受詞（複數）"},"observe":{"pos":"v.","zh":"觀察、注意到、遵守"},"of":{"pos":"prep.","zh":"…的、由…製成"},"off":{"pos":"adv.","zh":"離開、關閉；prep. 脫離"},"oil":{"pos":"n.","zh":"油、石油、沙拉油"},"old":{"pos":"adj.","zh":"年老的、舊的"},"older":{"pos":"adj.","zh":"較年長的、較舊的"},"on":{"pos":"prep.","zh":"在…之上、在…日；adv. 開啟"},"one":{"pos":"n.","zh":"一；pron. 一個、某人"},"only":{"pos":"adv.","zh":"只有、僅僅；adj. 唯一的"},"open":{"pos":"v.","zh":"打開；adj. 開放的、營業中的"},"opened":{"pos":"v.","zh":"打開了（過去式）"},"opening":{"pos":"n.","zh":"開幕、空缺；v. 打開中"},"operate":{"pos":"v.","zh":"操作、運作、開刀"},"operated":{"pos":"v.","zh":"操作運作（過去式）"},"operates":{"pos":"v.","zh":"運作、操作（三單形式）"},"operating":{"pos":"v.","zh":"操作中；adj. 營運的"},"opportunity":{"pos":"n.","zh":"機會、良機"},"options":{"pos":"n.","zh":"選項、選擇（複數）"},"or":{"pos":"conj.","zh":"或者、否則"},"ordered":{"pos":"v.","zh":"點餐、命令、訂購（過去式）"},"other":{"pos":"adj.","zh":"其他的；pron. 另一個人/物"},"others":{"pos":"pron.","zh":"其他人或物（複數）"},"our":{"pos":"pron.","zh":"我們的（所有格）"},"out":{"pos":"adv.","zh":"在外、向外"},"outdoors":{"pos":"adv.","zh":"在戶外、在野外"},"over":{"pos":"prep.","zh":"越過、超過、在…上方"},"own":{"pos":"adj.","zh":"自己的；v. 擁有"},"owners":{"pos":"n.","zh":"業主、所有者們（複數）"},"pa":{"pos":"n.","zh":"廣播系統 (PA system)"},"paid":{"pos":"v.","zh":"付款（pay之過去式/分詞）"},"panic":{"pos":"n./v.","zh":"恐慌、驚慌"},"paper":{"pos":"n.","zh":"紙張、論文、試卷"},"paragraph":{"pos":"n.","zh":"文章段落"},"passage":{"pos":"n.","zh":"篇章、短文、走道"},"passed":{"pos":"v.","zh":"通過、經過（過去式）"},"past":{"pos":"adj.","zh":"過去的；prep. 經過；n. 過去"},"pay":{"pos":"v.","zh":"付錢、支付；n. 薪資"},"pays":{"pos":"v.","zh":"付款（三單形式）"},"peace":{"pos":"n.","zh":"和平、安寧"},"people":{"pos":"n.","zh":"人們（person之複數）"},"pepper":{"pos":"n.","zh":"胡椒、辣椒"},"per":{"pos":"prep.","zh":"每、每一"},"pet":{"pos":"n.","zh":"寵物"},"pets":{"pos":"n.","zh":"寵物們（複數）"},"phone":{"pos":"n.","zh":"電話、手機"},"phones":{"pos":"n.","zh":"手機、電話（複數）"},"photos":{"pos":"n.","zh":"相片、照片（複數）"},"physical":{"pos":"adj.","zh":"實體的、身體的、物理的"},"pick":{"pos":"v.","zh":"挑選、採摘、撿起"},"picture":{"pos":"n.","zh":"圖畫、照片"},"pictures":{"pos":"n.","zh":"照片、圖片（複數）"},"place":{"pos":"n.","zh":"地方、地點；v. 放置"},"played":{"pos":"v.","zh":"遊玩、演奏過（過去式）"},"please":{"pos":"adv.","zh":"請；v. 使高興滿意"},"police":{"pos":"n.","zh":"警察、警方（集合名詞）"},"policy":{"pos":"n.","zh":"政策、方針"},"poor":{"pos":"adj.","zh":"貧窮的、可憐的、差勁的"},"post":{"pos":"v.","zh":"張貼、發布；n. 貼文、郵政"},"postponed":{"pos":"v.","zh":"延期、推遲（過去式）"},"postponing":{"pos":"v.","zh":"延期中（現在分詞）"},"potato":{"pos":"n.","zh":"馬鈴薯"},"potatoes":{"pos":"n.","zh":"馬鈴薯（複數）"},"potter":{"pos":"n.","zh":"陶藝家 / 專名（波特）"},"powered":{"pos":"adj.","zh":"以…為動力的；v. 供電驅動"},"practices":{"pos":"n.","zh":"練習、慣例（複數）；v. 練習（三單）"},"practicing":{"pos":"v.","zh":"練習中（現在分詞）"},"predicts":{"pos":"v.","zh":"預測（三單形式）"},"prepares":{"pos":"v.","zh":"準備（三單形式）"},"pretty":{"pos":"adj.","zh":"漂亮的；adv. 相當、頗為"},"prevent":{"pos":"v.","zh":"預防、防止、阻止"},"prevented":{"pos":"v.","zh":"預防阻止（過去式）"},"price":{"pos":"n.","zh":"價格、價錢"},"printer":{"pos":"n.","zh":"印表機、印刷機"},"prize":{"pos":"n.","zh":"獎賞、獎金"},"problems":{"pos":"n.","zh":"問題、難題（複數）"},"produce":{"pos":"v.","zh":"生產、製造；n. 農產品"},"product":{"pos":"n.","zh":"產品、產物"},"pronoun":{"pos":"n.","zh":"代名詞"},"protective":{"pos":"adj.","zh":"保護性的、防護的"},"protocol":{"pos":"n.","zh":"協議、通訊協定、禮儀"},"provided":{"pos":"v.","zh":"提供（過去式）；conj. 倘若"},"published":{"pos":"v.","zh":"出版、發布（過去式）"},"pushes":{"pos":"v.","zh":"推動、按壓（三單形式）"},"put":{"pos":"v.","zh":"放置、擺放"},"quarter":{"pos":"n.","zh":"四分之一、一刻鐘 (15分)"},"quickly":{"pos":"adv.","zh":"快速地、迅速地"},"quit":{"pos":"v.","zh":"停止、戒除、辭職"},"raindrops":{"pos":"n.","zh":"雨滴（複數）"},"raining":{"pos":"v.","zh":"下雨中（現在分詞）"},"ran":{"pos":"v.","zh":"奔跑、經營（run之過去式）"},"rang":{"pos":"v.","zh":"鳴響、打電話（ring之過去式）"},"rare":{"pos":"adj.","zh":"罕見的、稀有的"},"rate":{"pos":"n.","zh":"比率、速率；v. 評等"},"rather":{"pos":"adv.","zh":"相當、寧願 (would rather)"},"raw":{"pos":"adj.","zh":"生的、未加工的"},"re":{"pos":"prep.","zh":"關於 (Regarding)"},"reached":{"pos":"v.","zh":"到達、伸手觸及（過去式）"},"reaches":{"pos":"v.","zh":"到達（三單形式）"},"reaching":{"pos":"v.","zh":"觸及、達成（現在分詞）"},"readers":{"pos":"n.","zh":"讀者們（複數）"},"reading":{"pos":"n.","zh":"閱讀；v. 研讀中"},"really":{"pos":"adv.","zh":"真正地、實在"},"received":{"pos":"v.","zh":"收到、接獲（過去式）"},"receiving":{"pos":"v.","zh":"接收中（現在分詞）"},"recipe":{"pos":"n.","zh":"食譜、烹飪法"},"recycled":{"pos":"adj.","zh":"回收再利用的"},"recycling":{"pos":"n.","zh":"資源回收"},"refer":{"pos":"v.","zh":"提及、查閱、指涉"},"regular":{"pos":"adj.","zh":"規律的、常規的"},"remained":{"pos":"v.","zh":"依然保持、逗留（過去式）"},"repair":{"pos":"v.","zh":"修理、修繕；n. 修理"},"reported":{"pos":"v.","zh":"報導、報告（過去式）"},"requires":{"pos":"v.","zh":"需要、要求（三單形式）"},"resistance":{"pos":"n.","zh":"阻力、抵抗力"},"resisting":{"pos":"v.","zh":"抵抗中（現在分詞）"},"respect":{"pos":"v.","zh":"尊敬、尊重；n. 敬意"},"respecting":{"pos":"v.","zh":"尊重（現在分詞）"},"response":{"pos":"n.","zh":"回應、回覆"},"rest":{"pos":"n.","zh":"休息、剩餘部分；v. 休息"},"restaurant":{"pos":"n.","zh":"餐廳、餐館"},"restaurants":{"pos":"n.","zh":"餐廳（複數）"},"return":{"pos":"v.","zh":"返回、歸還；n. 回程"},"ride":{"pos":"v.","zh":"騎乘；n. 搭乘"},"right":{"pos":"adj.","zh":"正確的、右邊的；adv. 正確地"},"rings":{"pos":"v.","zh":"按鈴、響起（三單）；n. 戒指（複數）"},"rising":{"pos":"adj.","zh":"上升的；v. 升起中"},"river":{"pos":"n.","zh":"河流、江河"},"rivers":{"pos":"n.","zh":"河流（複數）"},"road":{"pos":"n.","zh":"道路、馬路"},"robotic":{"pos":"adj.","zh":"機器人的、機械化的"},"rock":{"pos":"n.","zh":"岩石、搖滾樂；v. 搖晃"},"role":{"pos":"n.","zh":"角色、作用"},"room":{"pos":"n.","zh":"房間、空間"},"roughly":{"pos":"adv.","zh":"粗略地、大約"},"run":{"pos":"v.","zh":"跑步、運轉、經營"},"runs":{"pos":"v.","zh":"跑步（三單形式）"},"rushed":{"pos":"v.","zh":"急忙奔向、倉促行事（過去式）"},"ryan":{"pos":"專名","zh":"人名（萊恩）"},"safe":{"pos":"adj.","zh":"安全的；n. 保險箱"},"said":{"pos":"v.","zh":"說道（say之過去式/分詞）"},"sales":{"pos":"n.","zh":"銷售額、特價特賣"},"same":{"pos":"adj.","zh":"相同的、同一的"},"sang":{"pos":"v.","zh":"唱歌（sing之過去式）"},"sanitized":{"pos":"adj.","zh":"已消毒殺菌的"},"sanitizing":{"pos":"v.","zh":"消毒殺菌中（現在分詞）"},"save":{"pos":"v.","zh":"拯救、節省、儲存"},"saw":{"pos":"v.","zh":"看見（see之過去式）；n. 鋸子"},"say":{"pos":"v.","zh":"說、講"},"saying":{"pos":"n.","zh":"格言、諺語；v. 說道（現在分詞）"},"scientific":{"pos":"adj.","zh":"科學的、精準的"},"seafood":{"pos":"n.","zh":"海鮮、海產食品"},"season":{"pos":"n.","zh":"季節、時期"},"seasons":{"pos":"n.","zh":"季節（複數）"},"see":{"pos":"v.","zh":"看見、理解、明白"},"seeing":{"pos":"v.","zh":"看見（現在分詞）"},"seen":{"pos":"v.","zh":"看見（see之過去分詞）"},"sell":{"pos":"v.","zh":"販賣、出售"},"selling":{"pos":"v.","zh":"販售中（現在分詞）"},"semiconductor":{"pos":"n.","zh":"半導體"},"sentence":{"pos":"n.","zh":"句子；v. 宣判"},"series":{"pos":"n.","zh":"系列、連續（單複同形）"},"served":{"pos":"v.","zh":"端上、服務、供應（過去式）"},"setup":{"pos":"n.","zh":"設置、配置、組裝"},"seven":{"pos":"n.","zh":"七"},"several":{"pos":"adj.","zh":"數個的、好幾個的"},"shaking":{"pos":"v.","zh":"搖晃、發抖（現在分詞）"},"share":{"pos":"v.","zh":"分享、分擔；n. 股份"},"sharp":{"pos":"adj.","zh":"鋒利的、敏銳的、準時的"},"she":{"pos":"pron.","zh":"她（主格）"},"shone":{"pos":"v.","zh":"閃耀、發光（shine之過去式）"},"shook":{"pos":"v.","zh":"搖動（shake之過去式）"},"short":{"pos":"adj.","zh":"短的、矮的、簡短的"},"should":{"pos":"aux.","zh":"應該、應當"},"show":{"pos":"v.","zh":"展示、出示；n. 表演"},"shtml":{"pos":"n.","zh":"伺服器網頁副檔名"},"side":{"pos":"n.","zh":"邊、側邊、立場"},"sign":{"pos":"n.","zh":"標誌、招牌；v. 簽名"},"since":{"pos":"prep.","zh":"自從；conj. 自從、既然"},"sincerity":{"pos":"n.","zh":"誠意、真心實意"},"sing":{"pos":"v.","zh":"唱歌、吟詠"},"singing":{"pos":"v.","zh":"唱歌中（現在分詞）"},"sits":{"pos":"v.","zh":"坐（三單形式）"},"sitting":{"pos":"v.","zh":"坐著（現在分詞）"},"size":{"pos":"n.","zh":"尺寸、大小"},"skill":{"pos":"n.","zh":"技能、技巧"},"skills":{"pos":"n.","zh":"技能、才華（複數）"},"sky":{"pos":"n.","zh":"天空"},"slice":{"pos":"n.","zh":"薄片；v. 切片"},"smell":{"pos":"v.","zh":"聞起來、嗅；n. 氣味"},"smoother":{"pos":"adj.","zh":"更流暢的、更光滑的"},"smoothest":{"pos":"adj.","zh":"最流暢的、最平滑的"},"snacks":{"pos":"n.","zh":"點心、零食（複數）"},"so":{"pos":"adv.","zh":"如此、那麼；conj. 所以"},"some":{"pos":"adj.","zh":"一些；pron. 一些"},"soon":{"pos":"adv.","zh":"很快、不久"},"sorry":{"pos":"adj.","zh":"抱歉的、難過的"},"sound":{"pos":"v.","zh":"聽起來；n. 聲音"},"sounds":{"pos":"v.","zh":"聽起來（三單形式）"},"source":{"pos":"n.","zh":"來源、出處"},"sparks":{"pos":"n.","zh":"火花、火星（複數）"},"speaking":{"pos":"v.","zh":"講話、演講（現在分詞）"},"speaks":{"pos":"v.","zh":"講話（三單形式）"},"speaksentence":{"pos":"v.","zh":"朗讀整句指令"},"special":{"pos":"adj.","zh":"特別的、特殊的"},"specialized":{"pos":"adj.","zh":"專門的、專業化的"},"specifically":{"pos":"adv.","zh":"具體而言、明確地"},"speeds":{"pos":"n.","zh":"速度（複數）"},"spends":{"pos":"v.","zh":"花費金錢/時間（三單）"},"spent":{"pos":"v.","zh":"花費（spend之過去式/分詞）"},"spite":{"pos":"n.","zh":"怨恨；片語 in spite of (儘管)"},"spoke":{"pos":"v.","zh":"說話（speak之過去式）"},"spring":{"pos":"n.","zh":"春天、泉水、彈簧"},"stable":{"pos":"adj.","zh":"穩定的、牢固的"},"stairs":{"pos":"n.","zh":"樓梯（複數）"},"stand":{"pos":"v.","zh":"站立、容忍；n. 攤位"},"start":{"pos":"v.","zh":"開始、啟動；n. 開始"},"started":{"pos":"v.","zh":"開始了（過去式）"},"starting":{"pos":"v.","zh":"開始中（現在分詞）"},"statement":{"pos":"n.","zh":"陳述、聲明、敘述句"},"steak":{"pos":"n.","zh":"牛排、排餐"},"still":{"pos":"adv.","zh":"仍然、依舊；adj. 靜止的"},"stomach":{"pos":"n.","zh":"胃、腹部"},"stop":{"pos":"v.","zh":"停止；n. 車站、停留"},"stopped":{"pos":"v.","zh":"停下來了（過去式）"},"stops":{"pos":"v.","zh":"停止（三單形式）"},"store":{"pos":"n.","zh":"商店；v. 儲存"},"storing":{"pos":"v.","zh":"儲存中（現在分詞）"},"storms":{"pos":"n.","zh":"暴風雨（複數）"},"strange":{"pos":"adj.","zh":"奇怪的、陌生的"},"strengthens":{"pos":"v.","zh":"強化、增強（三單形式）"},"strong":{"pos":"adj.","zh":"強壯的、堅固的、強烈的"},"strongly":{"pos":"adv.","zh":"強烈地、堅決地"},"studied":{"pos":"v.","zh":"研讀、學習過（過去式）"},"studying":{"pos":"v.","zh":"研讀學習中（現在分詞）"},"submitting":{"pos":"v.","zh":"提交、送件（現在分詞）"},"such":{"pos":"adj.","zh":"如此的、這樣的"},"sudden":{"pos":"adj.","zh":"突然的、意料之外的"},"suggestion":{"pos":"n.","zh":"提議、建議"},"sunshine":{"pos":"n.","zh":"陽光、日光"},"supervisor":{"pos":"n.","zh":"督導、主管、指導者"},"sure":{"pos":"adj.","zh":"確定的、有把握的"},"sweet":{"pos":"adj.","zh":"甜蜜的、甜的"},"sweetness":{"pos":"n.","zh":"甜味、甜蜜感"},"swimming":{"pos":"n.","zh":"游泳；v. 游泳中"},"table":{"pos":"n.","zh":"桌子、表格"},"tainan":{"pos":"專名","zh":"台南"},"taking":{"pos":"v.","zh":"拿取、花費（現在分詞）"},"task":{"pos":"n.","zh":"任務、工作"},"tea":{"pos":"n.","zh":"茶、茶水"},"team":{"pos":"n.","zh":"團隊、隊伍"},"tech":{"pos":"n.","zh":"科技、技術"},"temporary":{"pos":"adj.","zh":"暫時的、臨時的"},"ten":{"pos":"n.","zh":"十"},"test":{"pos":"n.","zh":"測驗、考驗；v. 檢驗"},"than":{"pos":"prep.","zh":"比、比較（用於比較級後）"},"that":{"pos":"pron.","zh":"那個；conj. 連接詞"},"the":{"pos":"art.","zh":"這、那（定冠詞）"},"their":{"pos":"pron.","zh":"他們的（所有格）"},"them":{"pos":"pron.","zh":"他們（受格）"},"then":{"pos":"adv.","zh":"然後、那時、那麼"},"there":{"pos":"adv.","zh":"在那裡；there is/are 有"},"therefore":{"pos":"adv.","zh":"因此、所以（轉折詞）"},"they":{"pos":"pron.","zh":"他們（主格）"},"thief":{"pos":"n.","zh":"小偷、竊賊"},"thin":{"pos":"adj.","zh":"薄的、瘦的"},"things":{"pos":"n.","zh":"事情、事物（複數）"},"think":{"pos":"v.","zh":"思考、認為、覺得"},"thinks":{"pos":"v.","zh":"認為（三單形式）"},"thirty":{"pos":"n.","zh":"三十"},"this":{"pos":"pron.","zh":"這個；adj. 這顆/位"},"those":{"pos":"pron.","zh":"那些（that之複數）"},"though":{"pos":"conj.","zh":"雖然；adv. 不過、然而"},"thousand":{"pos":"n.","zh":"千"},"thousands":{"pos":"n.","zh":"數以千計"},"three":{"pos":"n.","zh":"三"},"through":{"pos":"prep.","zh":"穿過、透過、自始至終"},"ticket":{"pos":"n.","zh":"票券、入場券"},"tickets":{"pos":"n.","zh":"票券（複數）"},"times":{"pos":"n.","zh":"時代、次數、倍數"},"tire":{"pos":"v.","zh":"感到疲倦；n. 輪胎"},"tiredly":{"pos":"adv.","zh":"疲憊地、精疲力竭地"},"title":{"pos":"n.","zh":"標題、頭銜"},"to":{"pos":"prep.","zh":"向、往、到；不定詞 to + V"},"tonight":{"pos":"adv.","zh":"今晚；n. 今夜"},"too":{"pos":"adv.","zh":"也、太、過度"},"tools":{"pos":"n.","zh":"工具（複數）"},"top":{"pos":"n.","zh":"頂端、頂部；adj. 頂尖的"},"topic":{"pos":"n.","zh":"主題、考點題目"},"total":{"pos":"adj.","zh":"總共的；n. 總數"},"toward":{"pos":"prep.","zh":"朝向、對著"},"traditional":{"pos":"adj.","zh":"傳統的、古法相傳的"},"trains":{"pos":"n.","zh":"火車（複數）；v. 訓練（三單）"},"travel":{"pos":"v.","zh":"旅行；n. 旅程"},"tree":{"pos":"n.","zh":"樹木"},"trees":{"pos":"n.","zh":"樹木（複數）"},"tried":{"pos":"v.","zh":"嘗試過（try之過去式）"},"true":{"pos":"adj.","zh":"真實的、正確的"},"truly":{"pos":"adv.","zh":"真正地、由衷地"},"try":{"pos":"v.","zh":"嘗試、設法"},"trying":{"pos":"v.","zh":"嘗試中（現在分詞）"},"tts":{"pos":"n.","zh":"語音合成發音 (TTS)"},"turned":{"pos":"v.","zh":"轉身、變成（過去式）"},"twenty":{"pos":"n.","zh":"二十"},"two":{"pos":"n.","zh":"二"},"umbrellas":{"pos":"n.","zh":"雨傘（複數）"},"unexpected":{"pos":"adj.","zh":"意想不到的、突如其來的"},"university":{"pos":"n.","zh":"大學"},"until":{"pos":"prep.","zh":"直到…為止；conj. 直到"},"unwanted":{"pos":"adj.","zh":"不需要的、多餘的"},"up":{"pos":"adv.","zh":"向上、起來"},"us":{"pos":"pron.","zh":"我們（第一人稱受格）"},"usd":{"pos":"n.","zh":"美元 (USD)"},"use":{"pos":"v.","zh":"使用、利用；n. 使用"},"used":{"pos":"adj.","zh":"二手的；v. 使用了（過去式）"},"useful":{"pos":"adj.","zh":"有用的、實用的"},"using":{"pos":"v.","zh":"使用中（現在分詞）"},"vehicles":{"pos":"n.","zh":"車輛、交通工具（複數）"},"very":{"pos":"adv.","zh":"非常、很"},"view":{"pos":"n.","zh":"視野、景觀、看法；v. 觀看"},"viewing":{"pos":"v.","zh":"觀看中（現在分詞）"},"visited":{"pos":"v.","zh":"拜訪了（過去式）"},"visiting":{"pos":"v.","zh":"拜訪中（現在分詞）"},"visitors":{"pos":"n.","zh":"參訪者、遊客們（複數）"},"visits":{"pos":"v.","zh":"拜訪（三單）；n. 參訪"},"waggle":{"pos":"n.","zh":"擺動；v. 搖擺（如蜜蜂擺尾舞）"},"wake":{"pos":"v.","zh":"醒來、喚醒"},"waking":{"pos":"v.","zh":"醒來中（現在分詞）"},"walked":{"pos":"v.","zh":"步行、散步（過去式）"},"walkers":{"pos":"n.","zh":"散步者、步行者們（複數）"},"walking":{"pos":"n.","zh":"散步；v. 走路中"},"wander":{"pos":"v.","zh":"遊蕩、漫步"},"want":{"pos":"v.","zh":"想要、需要"},"wanted":{"pos":"v.","zh":"想要（過去式）"},"wants":{"pos":"v.","zh":"想要（三單形式）"},"was":{"pos":"v.","zh":"是（is/am之過去式）"},"waste":{"pos":"v.","zh":"浪費；n. 廢棄物"},"wastes":{"pos":"v.","zh":"浪費（三單形式）"},"watered":{"pos":"v.","zh":"澆水了（過去式）"},"watering":{"pos":"v.","zh":"澆水中（現在分詞）"},"ways":{"pos":"n.","zh":"方法、道路（複數）"},"we":{"pos":"pron.","zh":"我們（第一人稱主格）"},"wear":{"pos":"v.","zh":"穿著、配戴"},"weighs":{"pos":"v.","zh":"重達、稱重（三單形式）"},"welcome":{"pos":"v.","zh":"歡迎、欣然接受"},"well":{"pos":"adv.","zh":"良好地；adj. 健康的"},"went":{"pos":"v.","zh":"去了（go之過去式）"},"were":{"pos":"v.","zh":"是（are之過去式）"},"what":{"pos":"pron.","zh":"什麼；adj. 什麼樣的"},"when":{"pos":"adv.","zh":"何時；conj. 當…時"},"where":{"pos":"adv.","zh":"在哪裡；conj. 在…的地方"},"whether":{"pos":"conj.","zh":"是否、無論是否"},"which":{"pos":"pron.","zh":"哪一個、哪一些"},"while":{"pos":"conj.","zh":"當…的時候、然而；n. 一會兒"},"white":{"pos":"adj.","zh":"白色的；n. 白色"},"who":{"pos":"pron.","zh":"誰（主格）"},"whole":{"pos":"adj.","zh":"整個的、完整的"},"whom":{"pos":"pron.","zh":"誰（受格）"},"whose":{"pos":"pron.","zh":"誰的（所有格）"},"why":{"pos":"adv.","zh":"為什麼、何故"},"wild":{"pos":"adj.","zh":"野生的、狂野的"},"will":{"pos":"aux.","zh":"將會；n. 意志、遺囑"},"win":{"pos":"v.","zh":"贏得、獲勝"},"wind":{"pos":"n.","zh":"風；v. 纏繞"},"windows":{"pos":"n.","zh":"窗戶（複數）"},"wings":{"pos":"n.","zh":"翅膀、羽翼（複數）"},"wins":{"pos":"v.","zh":"獲勝（三單形式）"},"with":{"pos":"prep.","zh":"和…一起、用、具有"},"within":{"pos":"prep.","zh":"在…之內"},"without":{"pos":"prep.","zh":"沒有、無…的情況下"},"woke":{"pos":"v.","zh":"醒來（wake之過去式）"},"woken":{"pos":"v.","zh":"醒來（wake之過去分詞）"},"wonderfully":{"pos":"adv.","zh":"極好地、精彩地"},"wooden":{"pos":"adj.","zh":"木製的、木頭的"},"word":{"pos":"n.","zh":"單字、文字、話語"},"words":{"pos":"n.","zh":"單字（複數）"},"worked":{"pos":"v.","zh":"工作、運作過（過去式）"},"worker":{"pos":"n.","zh":"工人、勞工"},"workers":{"pos":"n.","zh":"工人們（複數）"},"working":{"pos":"v.","zh":"工作運作中（現在分詞）"},"workshop":{"pos":"n.","zh":"工作坊、研討會"},"worried":{"pos":"adj.","zh":"感到擔心的、焦慮的"},"would":{"pos":"aux.","zh":"將會、想要 (will之過去式)"},"wrap":{"pos":"v.","zh":"包裝、包裹"},"write":{"pos":"v.","zh":"書寫、寫作"},"writing":{"pos":"n.","zh":"寫作、筆跡；v. 書寫中"},"wrote":{"pos":"v.","zh":"寫了（write之過去式）"},"wu":{"pos":"專名","zh":"姓氏（吳）"},"year":{"pos":"n.","zh":"年、年度"},"years":{"pos":"n.","zh":"年數、歲數（複數）"},"yes":{"pos":"adv.","zh":"是的"},"yet":{"pos":"adv.","zh":"尚未、還；conj. 然而"},"york":{"pos":"專名","zh":"約克（如 New York 紐約）"},"you":{"pos":"pron.","zh":"你、你們（主格/受格）"},"younger":{"pos":"adj.","zh":"較年輕的"},"your":{"pos":"pron.","zh":"你的、你們的（所有格）"},"yourself":{"pos":"pron.","zh":"你自己"},"zero":{"pos":"n.","zh":"零"},"zhongli":{"pos":"專名","zh":"中壢"},"zone":{"pos":"n.","zh":"區域、地帶"},"cindy":{"pos":"專名","zh":"人名（辛蒂）"},"david":{"pos":"專名","zh":"人名（大衛）"},"december":{"pos":"n.","zh":"十二月"},"emily":{"pos":"專名","zh":"人名（艾蜜莉）"},"friday":{"pos":"n.","zh":"星期五、週五"},"japan":{"pos":"專名","zh":"日本"},"jerry":{"pos":"專名","zh":"人名（傑瑞）"},"john":{"pos":"專名","zh":"人名（約翰）"},"kaohsiung":{"pos":"專名","zh":"高雄"},"ken":{"pos":"專名","zh":"人名（肯恩）"},"kevin":{"pos":"專名","zh":"人名（凱文）"},"leo":{"pos":"專名","zh":"人名（里奧）"},"lisa":{"pos":"專名","zh":"人名（麗莎）"},"may":{"pos":"aux.","zh":"可能、可以；n. 五月"},"monday":{"pos":"n.","zh":"星期一、週一"},"peter":{"pos":"專名","zh":"人名（彼得）"},"sam":{"pos":"專名","zh":"人名（山姆）"},"saturday":{"pos":"n.","zh":"星期六、週六"},"sunday":{"pos":"n.","zh":"星期日、週日"},"taiwan":{"pos":"專名","zh":"臺灣、台灣"},"tokyo":{"pos":"專名","zh":"東京"},"wednesday":{"pos":"n.","zh":"星期三、週三"},"wendy":{"pos":"專名","zh":"人名（溫蒂）"},"normal":{"pos":"adj.","zh":"正常的、常態的、標準的"},"pressure":{"pos":"n.","zh":"壓力、氣壓、大氣壓力"},"atmospheric":{"pos":"adj.","zh":"大氣的、大氣層的"},"degree":{"pos":"n.","zh":"度數、學位、程度"},"boiled":{"pos":"v./adj.","zh":"煮沸了的、沸騰（過去式/分詞）"},"boiling":{"pos":"adj./v.","zh":"沸騰的、滾燙的"},"adj":{"pos":"abbr.","zh":"形容詞 (adjective)"},"adp":{"pos":"abbr.","zh":"副詞片語 (adverb phrase)"},"adv":{"pos":"abbr.","zh":"副詞 (adverb)"},"vi":{"pos":"abbr.","zh":"不及物動詞 (intransitive verb)"},"vt":{"pos":"abbr.","zh":"及物動詞 (transitive verb)"},"vr":{"pos":"abbr.","zh":"反身動詞 (reflexive verb)"},"vs":{"pos":"prep.","zh":"與……相對 (versus)"},"pos":{"pos":"abbr.","zh":"詞性 (part of speech)"},"prep":{"pos":"abbr.","zh":"介系詞 (preposition)"},"sb":{"pos":"abbr.","zh":"某人 (somebody)"},"sth":{"pos":"abbr.","zh":"某物 (something)"},"aux":{"pos":"abbr.","zh":"助動詞 (auxiliary verb)"},"auxiliary":{"pos":"adj./n.","zh":"輔助的；助動詞"},"transitive":{"pos":"adj.","zh":"及物的（接受詞）"},"intransitive":{"pos":"adj.","zh":"不及物的（不接受詞）"},"imperative":{"pos":"adj./n.","zh":"祈使的；祈使句、命令"},"irregular":{"pos":"adj.","zh":"不規則的"},"passive":{"pos":"adj.","zh":"被動的、消極的"},"linking":{"pos":"adj.","zh":"連綴的 (linking verb)"},"dative":{"pos":"adj./n.","zh":"與格的、授與動詞的"},"clause":{"pos":"n.","zh":"子句、條款"},"claus":{"pos":"n.","zh":"克勞斯（如 Santa Claus 聖誕老人）"},"collocations":{"pos":"n.","zh":"搭配詞、固定搭配"},"grammar":{"pos":"n.","zh":"文法、語法"},"noun":{"pos":"n.","zh":"名詞"},"verb":{"pos":"n.","zh":"動詞"},"verbs":{"pos":"n.","zh":"動詞（複數）"},"sentences":{"pos":"n.","zh":"句子（複數）"},"subject":{"pos":"n.","zh":"主詞、主題、科目"},"phrase":{"pos":"n.","zh":"片語、短語"},"modal":{"pos":"adj./n.","zh":"情態的；情態助動詞"},"expressions":{"pos":"n.","zh":"表達、片語、表情"},"footnotes":{"pos":"n.","zh":"腳註、註釋"},"headers":{"pos":"n.","zh":"標題、頁首"},"inference":{"pos":"n.","zh":"推論、推斷"},"absolutely":{"pos":"adv.","zh":"絕對地、完全地"},"accidental":{"pos":"adj.","zh":"意外的、偶然的"},"actor":{"pos":"n.","zh":"演員、男演員"},"actually":{"pos":"adv.","zh":"實際上、事實上"},"addition":{"pos":"n.","zh":"增加、加法；此外 (in addition)"},"adult":{"pos":"n./adj.","zh":"成年人；成年的"},"adults":{"pos":"n.","zh":"成年人（複數）"},"advise":{"pos":"v.","zh":"建議、勸告"},"advised":{"pos":"v.","zh":"建議了（過去式/分詞）"},"af":{"pos":"abbr.","zh":"空軍 (Air Force) 或非洲 (Africa)"},"afraid":{"pos":"adj.","zh":"害怕的、擔心的"},"aggressive":{"pos":"adj.","zh":"具侵略性的、好鬥的、積極進取的"},"align":{"pos":"v.","zh":"對齊、校準、使一致"},"amaze":{"pos":"v.","zh":"使驚奇、使驚嘆"},"amazed":{"pos":"adj.","zh":"感到驚奇的、吃驚的"},"amazement":{"pos":"n.","zh":"驚奇、驚異"},"amazing":{"pos":"adj.","zh":"令人驚奇的、太棒了"},"analysis":{"pos":"n.","zh":"分析、解析"},"ancient":{"pos":"adj.","zh":"古老的、古代的"},"anger":{"pos":"n./v.","zh":"憤怒、生氣；激怒"},"angle":{"pos":"n.","zh":"角度、視角"},"animal":{"pos":"n.","zh":"動物"},"annoyed":{"pos":"adj.","zh":"感到惱怒的、氣惱的"},"anything":{"pos":"pron.","zh":"任何事物、任何東西"},"appointment":{"pos":"n.","zh":"預約、約會、任命"},"approached":{"pos":"v.","zh":"接近、走近（過去式）"},"aren":{"pos":"v.","zh":"不是（are not 的縮寫）"},"arr":{"pos":"abbr.","zh":"抵達 (arrival) 的縮寫"},"asia":{"pos":"n.","zh":"亞洲"},"associated":{"pos":"adj./v.","zh":"相關聯的、與……有關"},"attend":{"pos":"v.","zh":"參加、出席、就讀"},"auditorium":{"pos":"n.","zh":"大禮堂、音樂廳"},"austrian":{"pos":"adj./n.","zh":"奧地利的；奧地利人"},"auto":{"pos":"n./adj.","zh":"汽車；自動的"},"award":{"pos":"n./v.","zh":"獎項；頒發、授予"},"awarded":{"pos":"v.","zh":"授予、頒發（過去式/分詞）"},"badge":{"pos":"n.","zh":"徽章、標籤"},"baggage":{"pos":"n.","zh":"行李"},"batch":{"pos":"n.","zh":"一批、一組"},"bbf":{"pos":"n.","zh":"摯友、最好的朋友 (best friend forever)"},"bee":{"pos":"n.","zh":"蜜蜂"},"beforehand":{"pos":"adv.","zh":"事先、預先"},"began":{"pos":"v.","zh":"開始（begin 的過去式）"},"believed":{"pos":"v.","zh":"相信（believe 的過去式）"},"believes":{"pos":"v.","zh":"相信（三單現）"},"beloved":{"pos":"adj.","zh":"深愛的、心愛的"},"beverages":{"pos":"n.","zh":"飲料（複數）"},"blackboard":{"pos":"n.","zh":"黑板"},"block":{"pos":"n./v.","zh":"街區、積木；阻擋"},"boarding":{"pos":"n./v.","zh":"登機、寄宿"},"bold":{"pos":"adj.","zh":"大膽的、粗體字的"},"border":{"pos":"n.","zh":"邊界、邊境"},"bores":{"pos":"v.","zh":"使厭煩（三單現）"},"born":{"pos":"adj./v.","zh":"出生的、天生的"},"bottom":{"pos":"n./adj.","zh":"底部；底部的"},"bowl":{"pos":"n.","zh":"碗、一碗"},"box":{"pos":"n.","zh":"箱子、盒子"},"boys":{"pos":"n.","zh":"男孩們（複數）"},"br":{"pos":"n.","zh":"換行標籤 (HTML break line)"},"briefing":{"pos":"n.","zh":"簡報、簡短說明"},"btn":{"pos":"abbr.","zh":"按鈕 (button)"},"button":{"pos":"n.","zh":"按鈕、鈕扣"},"buys":{"pos":"v.","zh":"買（buy 的三單現）"},"cap":{"pos":"n.","zh":"棒球帽、便帽、蓋子"},"capable":{"pos":"adj.","zh":"有能力的、能夠……的"},"card":{"pos":"n.","zh":"卡片、紙牌"},"category":{"pos":"n.","zh":"類別、種類"},"cause":{"pos":"v./n.","zh":"導致、引起；原因、起因"},"center":{"pos":"n.","zh":"中心、核心"},"ceremony":{"pos":"n.","zh":"典禮、儀式"},"ch":{"pos":"abbr.","zh":"章節 (chapter) 或瑞士 (Switzerland)"},"charged":{"pos":"v./adj.","zh":"收費、充電、控告（過去式/分詞）"},"chart":{"pos":"n.","zh":"圖表、圖冊"},"chatting":{"pos":"v.","zh":"正在聊天、閒談"},"chips":{"pos":"n.","zh":"薯片、洋芋片、晶片"},"cinema":{"pos":"n.","zh":"電影院、電影"},"citizens":{"pos":"n.","zh":"公民、市民（複數）"},"clock":{"pos":"n.","zh":"時鐘、鐘"},"close":{"pos":"v./adj.","zh":"關閉；親近的、接近的"},"closed":{"pos":"adj./v.","zh":"關閉的；關閉了（過去式）"},"code":{"pos":"n.","zh":"代碼、密碼、準則"},"collapse":{"pos":"v./n.","zh":"倒塌、瓦解、崩潰"},"color":{"pos":"n.","zh":"顏色、色彩"},"column":{"pos":"n.","zh":"欄位、圓柱、專欄"},"combos":{"pos":"n.","zh":"套餐、組合（複數）"},"communication":{"pos":"n.","zh":"溝通、通訊、交流"},"commuters":{"pos":"n.","zh":"通勤者、上下班搭車族"},"companies":{"pos":"n.","zh":"公司、伴侶（複數）"},"complaining":{"pos":"v.","zh":"抱怨、訴苦"},"complete":{"pos":"v./adj.","zh":"完成；完整的"},"connect":{"pos":"v.","zh":"連結、連繫"},"context":{"pos":"n.","zh":"上下文、語境、背景"},"continues":{"pos":"v.","zh":"繼續、持續（三單現）"},"continuously":{"pos":"adv.","zh":"持續不斷地、連續地"},"contrast":{"pos":"n./v.","zh":"對比、對照"},"converting":{"pos":"v.","zh":"轉換、轉變"},"core":{"pos":"n./adj.","zh":"核心；核心的"},"course":{"pos":"n.","zh":"課程、過程；當然 (of course)"},"cousin":{"pos":"n.","zh":"堂表兄弟姊妹"},"creations":{"pos":"n.","zh":"創作、創作品（複數）"},"creature":{"pos":"n.","zh":"生物、動物"},"creatures":{"pos":"n.","zh":"生物、動物（複數）"},"cried":{"pos":"v.","zh":"哭泣、呼喊（cry 的過去式）"},"crispy":{"pos":"adj.","zh":"酥脆的、清脆的"},"crossing":{"pos":"n./v.","zh":"十字路口、平交道；橫越"},"crunchy":{"pos":"adj.","zh":"香脆的、爽脆的"},"culture":{"pos":"n.","zh":"文化、教養"},"cute":{"pos":"adj.","zh":"可愛的"},"cuts":{"pos":"v./n.","zh":"切、割、削減（三單現）"},"dancing":{"pos":"v./n.","zh":"正在跳舞；跳舞"},"decision":{"pos":"n.","zh":"決定、抉擇"},"decoration":{"pos":"n.","zh":"裝飾、裝潢、裝飾品"},"deep":{"pos":"adj./adv.","zh":"深的、深沈的；深深地"},"delay":{"pos":"n./v.","zh":"延遲、耽擱"},"delighted":{"pos":"adj.","zh":"感到非常高興的、欣喜的"},"demand":{"pos":"n./v.","zh":"要求、需求；要求"},"demanded":{"pos":"v.","zh":"強烈要求了（過去式）"},"demonstrates":{"pos":"v.","zh":"展示、示範、證明（三單現）"},"dental":{"pos":"adj.","zh":"牙齒的、牙科的"},"dep":{"pos":"abbr.","zh":"出發 (departure) 或部門 (department)"},"desk":{"pos":"n.","zh":"書桌、辦公桌"},"detail":{"pos":"n.","zh":"細節、詳情"},"dining":{"pos":"n.","zh":"進餐、用餐"},"discovered":{"pos":"v.","zh":"發現了（過去式/分詞）"},"discovers":{"pos":"v.","zh":"發現（三單現）"},"dish":{"pos":"n.","zh":"盤子、菜餚"},"div":{"pos":"abbr.","zh":"除法；區塊標籤 (HTML division)"},"documentary":{"pos":"n.","zh":"紀錄片"},"dollar":{"pos":"n.","zh":"美元、元"},"dramatically":{"pos":"adv.","zh":"戲劇性地、大幅度地"},"dumped":{"pos":"v.","zh":"傾倒、丟棄、甩掉（過去式）"},"eager":{"pos":"adj.","zh":"渴望的、急切的"},"eagerly":{"pos":"adv.","zh":"急切地、渴望地"},"east":{"pos":"n./adj.","zh":"東方；向東的"},"eats":{"pos":"v.","zh":"吃（eat 的三單現）"},"edu":{"pos":"abbr.","zh":"教育機構網址後綴 (education)"},"eg":{"pos":"abbr.","zh":"例如 (for example, exempli gratia)"},"eight":{"pos":"num.","zh":"八"},"em":{"pos":"abbr.","zh":"強調 (emphasis) 或相對排版單位"},"encounter":{"pos":"v./n.","zh":"邂逅、偶遇、遭遇"},"end":{"pos":"n./v.","zh":"結束、終點；結束"},"entrance":{"pos":"n.","zh":"入口、入場、入學"},"entry":{"pos":"n.","zh":"進入、條目、參賽作品"},"environmental":{"pos":"adj.","zh":"環境的、環保的"},"er":{"pos":"suff.","zh":"比較級後綴或表「人」的字尾"},"es":{"pos":"suff.","zh":"名詞複數或動詞三單後綴"},"est":{"pos":"suff.","zh":"最高級後綴 (-est)"},"europe":{"pos":"n.","zh":"歐洲"},"exactly":{"pos":"adv.","zh":"精確地、正是如此"},"example":{"pos":"n.","zh":"例子、範例"},"excluding":{"pos":"prep.","zh":"不包括、排除在外"},"exhaust":{"pos":"v./n.","zh":"使精疲力竭、耗盡；廢氣"},"exhausting":{"pos":"adj.","zh":"令人筋疲力竭的"},"exhaustion":{"pos":"n.","zh":"精疲力竭、筋疲力盡"},"expecting":{"pos":"v.","zh":"期待、預料、懷孕中"},"experience":{"pos":"n./v.","zh":"經驗、經歷；體驗"},"explained":{"pos":"v.","zh":"解釋了、說明了（過去式）"},"fact":{"pos":"n.","zh":"事實、真相"},"facts":{"pos":"n.","zh":"事實（複數）"},"fares":{"pos":"n.","zh":"車資、票價（複數）"},"fascinate":{"pos":"v.","zh":"深深吸引、迷住"},"fascinated":{"pos":"adj.","zh":"著迷的、深深被吸引的"},"fascinating":{"pos":"adj.","zh":"極有吸引力的、迷人的"},"fascination":{"pos":"n.","zh":"魅力、著迷"},"fees":{"pos":"n.","zh":"費用、服務費（複數）"},"fever":{"pos":"n.","zh":"發燒、狂熱"},"few":{"pos":"adj./pron.","zh":"很少的（幾乎沒有）；少數"},"figure":{"pos":"n./v.","zh":"數字、身材、人物；認為、計算"},"finish":{"pos":"v./n.","zh":"完成、結束"},"finishes":{"pos":"v.","zh":"完成、結束（三單現）"},"flooding":{"pos":"n./v.","zh":"淹水、水災；淹沒"},"flower":{"pos":"n.","zh":"花朵"},"font":{"pos":"n.","zh":"字型、字體"},"foods":{"pos":"n.","zh":"各類食物（複數）"},"forbidden":{"pos":"adj.","zh":"被禁止的"},"forest":{"pos":"n.","zh":"森林"},"forms":{"pos":"n./v.","zh":"表格、形式；形成（三單現）"},"fossil":{"pos":"n.","zh":"化石"},"four":{"pos":"num.","zh":"四"},"fraction":{"pos":"n.","zh":"分數、微小的部分"},"france":{"pos":"n.","zh":"法國"},"freshmen":{"pos":"n.","zh":"大學/高中一年級新生（複數）"},"fright":{"pos":"n.","zh":"驚嚇、恐怖"},"frighten":{"pos":"v.","zh":"使驚恐、嚇唬"},"frightening":{"pos":"adj.","zh":"令人恐懼的、嚇人的"},"frisch":{"pos":"n.","zh":"弗里施（奧地利動物行為學家，諾貝爾獎得主）"},"frustration":{"pos":"n.","zh":"挫折感、沮喪"},"furthermore":{"pos":"adv.","zh":"此外、而且、再者"},"georgia":{"pos":"n.","zh":"喬治亞州（美國州名）"},"germany":{"pos":"n.","zh":"德國"},"getting":{"pos":"v.","zh":"正在獲得、變得"},"glad":{"pos":"adj.","zh":"高興的、樂意的"},"glass":{"pos":"n.","zh":"玻璃、玻璃杯"},"got":{"pos":"v.","zh":"得到、變成（get 的過去式）"},"happen":{"pos":"v.","zh":"發生"},"happened":{"pos":"v.","zh":"發生了（過去式）"},"happens":{"pos":"v.","zh":"發生（三單現）"},"happily":{"pos":"adv.","zh":"快樂地、幸運地"},"hate":{"pos":"v./n.","zh":"討厭、憎恨"},"help":{"pos":"v./n.","zh":"幫助、協助"},"helping":{"pos":"v./n.","zh":"正在幫助；一份（食物）"},"hey":{"pos":"interj.","zh":"嘿（打招呼或引起注意）"},"hi":{"pos":"interj.","zh":"嗨、你好"},"historical":{"pos":"adj.","zh":"歷史上的、有歷史意義的"},"hits":{"pos":"v./n.","zh":"打擊、命中、熱門歌曲（三單現）"},"hope":{"pos":"v./n.","zh":"希望、期盼"},"hospitals":{"pos":"n.","zh":"醫院（複數）"},"https":{"pos":"abbr.","zh":"安全超文本傳輸協定"},"hud":{"pos":"abbr.","zh":"抬頭顯示器 (Heads-Up Display)"},"human":{"pos":"n./adj.","zh":"人類；人類的"},"humans":{"pos":"n.","zh":"人類（複數）"},"hurry":{"pos":"v./n.","zh":"匆忙、趕緊"},"hurting":{"pos":"v.","zh":"疼痛、傷害中"},"id":{"pos":"abbr.","zh":"身分證件、識別碼 (identification)"},"identical":{"pos":"adj.","zh":"完全相同的、一模一樣的"},"ies":{"pos":"suff.","zh":"名詞複數或動詞三單後綴 (-y 變 -ies)"},"increases":{"pos":"v./n.","zh":"增加、增長（三單現）"},"indicates":{"pos":"v.","zh":"指出、表明、象徵（三單現）"},"industry":{"pos":"n.","zh":"工業、產業、勤奮"},"infection":{"pos":"n.","zh":"感染、傳染病"},"injured":{"pos":"adj./v.","zh":"受傷的；傷害（過去式/分詞）"},"insect":{"pos":"n.","zh":"昆蟲"},"instance":{"pos":"n.","zh":"例子、事例；例如 (for instance)"},"institute":{"pos":"n./v.","zh":"研究所、學院；設立"},"interactive":{"pos":"adj.","zh":"互動式的、交互作用的"},"invention":{"pos":"n.","zh":"發明、發明物"},"item":{"pos":"n.","zh":"項目、一件商品"},"join":{"pos":"v.","zh":"加入、連結、參加"},"joins":{"pos":"v.","zh":"加入（三單現）"},"joint":{"pos":"adj./n.","zh":"聯合的、共同的；關節"},"juice":{"pos":"n.","zh":"果汁、原汁"},"karl":{"pos":"n.","zh":"卡爾（男子名）"},"kids":{"pos":"n.","zh":"小孩們（複數）"},"kilometer":{"pos":"n.","zh":"公里、千米"},"kingdom":{"pos":"n.","zh":"王國、界（生物分類）"},"legendary":{"pos":"adj.","zh":"傳奇的、家喻戶曉的"},"lesson":{"pos":"n.","zh":"課程、教訓"},"listen":{"pos":"v.","zh":"聆聽、聽從"},"listened":{"pos":"v.","zh":"聽了（過去式）"},"listening":{"pos":"v./n.","zh":"正在聽；聽力"},"listens":{"pos":"v.","zh":"聽（三單現）"},"ll":{"pos":"abbr.","zh":"將會（will 或 shall 的縮寫）"},"looked":{"pos":"v.","zh":"看、看起來（過去式）"},"loses":{"pos":"v.","zh":"失去、輸掉（三單現）"},"losing":{"pos":"v.","zh":"正在失去、輸掉"},"lot":{"pos":"n.","zh":"許多 (a lot)、命運、籤"},"lots":{"pos":"n.","zh":"許多 (lots of)"},"love":{"pos":"v./n.","zh":"喜愛、愛"},"low":{"pos":"adj./adv.","zh":"低的、矮的；低地"},"lying":{"pos":"v.","zh":"躺著、說謊（lie 的現在分詞）"},"ma":{"pos":"abbr.","zh":"碩士 (Master of Arts) 或媽媽"},"magic":{"pos":"n./adj.","zh":"魔法、魔術；神奇的"},"manage":{"pos":"v.","zh":"管理、設法做到"},"margin":{"pos":"n.","zh":"邊界、頁邊留白、利潤"},"marine":{"pos":"adj./n.","zh":"海洋的、航海的；海軍陸戰隊員"},"masks":{"pos":"n.","zh":"口罩、面具（複數）"},"mates":{"pos":"n.","zh":"夥伴、同學、配偶（複數）"},"maybe":{"pos":"adv.","zh":"也許、可能"},"meal":{"pos":"n.","zh":"一餐、餐膳"},"meet":{"pos":"v.","zh":"遇見、認識、符合"},"mention":{"pos":"v./n.","zh":"提及、談起"},"metro":{"pos":"n.","zh":"地下鐵、捷運"},"middle":{"pos":"adj./n.","zh":"中間的；中央、中間"},"mondays":{"pos":"n.","zh":"每逢星期一（複數）"},"movements":{"pos":"n.","zh":"運動、動作、樂章（複數）"},"ms":{"pos":"n.","zh":"女士（不論已婚未婚之稱呼）"},"multi":{"pos":"pref.","zh":"多的、多元的 (multiple)"},"mushroom":{"pos":"n.","zh":"蘑菇、蕈類"},"nbsp":{"pos":"n.","zh":"不換行空格標籤 (HTML non-breaking space)"},"near":{"pos":"prep./adj.","zh":"靠近、在……附近；近的"},"noon":{"pos":"n.","zh":"中午、正午 (at noon)"},"northbound":{"pos":"adj./adv.","zh":"往北的、北上的"},"note":{"pos":"n./v.","zh":"筆記、便條、注意；注意到"},"notes":{"pos":"n.","zh":"筆記、音符（複數）"},"notice":{"pos":"v./n.","zh":"注意到；通知、公告"},"noticeably":{"pos":"adv.","zh":"顯著地、顯而易見地"},"noticed":{"pos":"v.","zh":"注意到了（過去式）"},"novels":{"pos":"n.","zh":"長篇小說（複數）"},"observing":{"pos":"v.","zh":"正在觀察、遵守"},"occur":{"pos":"v.","zh":"發生、出現、存在"},"occurred":{"pos":"v.","zh":"發生了（過去式）"},"ocean":{"pos":"n.","zh":"海洋、大洋"},"oh":{"pos":"interj.","zh":"噢、哦（表驚訝或理解）"},"once":{"pos":"adv./conj.","zh":"曾經、一次；一旦……就"},"onclick":{"pos":"n.","zh":"點擊事件 (HTML click handler)"},"onto":{"pos":"prep.","zh":"到……之上、朝向"},"orange":{"pos":"n./adj.","zh":"柳橙、橘子；橘色的"},"order":{"pos":"n./v.","zh":"命令、訂單、順序；點餐、命令"},"original":{"pos":"adj./n.","zh":"原創的、原先的；原作"},"otherwise":{"pos":"adv./conj.","zh":"否則、要不然"},"outer":{"pos":"adj.","zh":"外面的、外圍的"},"outerwear":{"pos":"n.","zh":"外套、外衣"},"oven":{"pos":"n.","zh":"烤箱、烤爐"},"overflow":{"pos":"v./n.","zh":"溢出、滿出"},"padding":{"pos":"n.","zh":"內距、襯墊"},"pardon":{"pos":"v./n.","zh":"原諒、寬恕；請再說一次"},"part":{"pos":"n.","zh":"部分、零件、角色"},"partners":{"pos":"n.","zh":"夥伴、搭檔（複數）"},"passerby":{"pos":"n.","zh":"路人、過路客"},"patch":{"pos":"n./v.","zh":"眼罩、補丁、小塊土地；修補"},"patiently":{"pos":"adv.","zh":"有耐心心地、耐煩地"},"pattern":{"pos":"n.","zh":"模式、圖案、花樣"},"paying":{"pos":"v.","zh":"付款中、付出"},"pen":{"pos":"n.","zh":"原子筆、鋼筆"},"perspective":{"pos":"n.","zh":"觀點、視角、遠景"},"photography":{"pos":"n.","zh":"攝影、照相術"},"physics":{"pos":"n.","zh":"物理學"},"piece":{"pos":"n.","zh":"一件、一片、一塊"},"pieces":{"pos":"n.","zh":"片、塊、件（複數）"},"pitch":{"pos":"n./v.","zh":"音高、球場；投球、傾斜"},"planning":{"pos":"n./v.","zh":"規劃、計畫"},"platform":{"pos":"n.","zh":"月台、平台、講台"},"plays":{"pos":"v./n.","zh":"玩、演奏；戲劇（三單現/複數）"},"plenty":{"pos":"pron./n.","zh":"充足、大量 (plenty of)"},"popcorn":{"pos":"n.","zh":"爆米花"},"precise":{"pos":"adj.","zh":"精確的、準確的"},"priced":{"pos":"adj.","zh":"定價的、標價的"},"prices":{"pos":"n.","zh":"價格、物價（複數）"},"pricing":{"pos":"n.","zh":"定價策略、計價"},"principal":{"pos":"n./adj.","zh":"校長；主要的、首要的"},"problem":{"pos":"n.","zh":"問題、難題"},"promise":{"pos":"v./n.","zh":"承諾、答應；諾言"},"proved":{"pos":"v.","zh":"證明了、證實（過去式/分詞）"},"purple":{"pos":"n./adj.","zh":"紫色；紫色的"},"px":{"pos":"n.","zh":"像素（螢幕顯示單位 pixel）"},"radius":{"pos":"n.","zh":"半徑、範圍"},"rains":{"pos":"v./n.","zh":"下雨（三單現）；雨天"},"rapidly":{"pos":"adv.","zh":"迅速地、飛快地"},"rarely":{"pos":"adv.","zh":"很少、難得、不常"},"rcpet":{"pos":"abbr.","zh":"技專校院入學測驗中心"},"real":{"pos":"adj.","zh":"真實的、真正的"},"receipt":{"pos":"n.","zh":"收據、發票"},"red":{"pos":"n./adj.","zh":"紅色；紅色的"},"ref":{"pos":"abbr.","zh":"參考 (reference) 或裁判 (referee)"},"regions":{"pos":"n.","zh":"地區、地帶（複數）"},"relation":{"pos":"n.","zh":"關係、關聯、親戚"},"relative":{"pos":"adj./n.","zh":"相對的；親戚"},"relax":{"pos":"v.","zh":"放鬆、休息"},"rely":{"pos":"v.","zh":"依靠、依賴 (rely on)"},"remarkable":{"pos":"adj.","zh":"非凡的、值得注意的、卓越的"},"requested":{"pos":"v.","zh":"請求了、要求（過去式）"},"reserved":{"pos":"adj./v.","zh":"預訂的、內向拘謹的；保留"},"returns":{"pos":"v./n.","zh":"返回、歸還（三單現/複數）"},"rich":{"pos":"adj.","zh":"富有的、豐富的"},"rise":{"pos":"v./n.","zh":"上升、升起、增加"},"rises":{"pos":"v.","zh":"升起、上升（三單現）"},"romantic":{"pos":"adj.","zh":"浪漫的"},"rose":{"pos":"n./v.","zh":"玫瑰；上升了（rise 的過去式）"},"roses":{"pos":"n.","zh":"玫瑰花（複數）"},"round":{"pos":"adj./prep.","zh":"圓形的；圍繞、回合"},"row":{"pos":"n./v.","zh":"一排、一行；划船"},"rude":{"pos":"adj.","zh":"無禮的、粗魯的"},"rule":{"pos":"n./v.","zh":"規則、統治；統治"},"rules":{"pos":"n./v.","zh":"規則（複數）；統治（三單現）"},"running":{"pos":"v./n.","zh":"跑步中、運轉；跑步"},"salt":{"pos":"n.","zh":"鹽、食鹽"},"santa":{"pos":"n.","zh":"聖誕老人 (Santa Claus)"},"saratoga":{"pos":"n.","zh":"薩拉托加（著名泉水勝地）"},"scarcely":{"pos":"adv.","zh":"幾乎不、勉強才"},"scare":{"pos":"v./n.","zh":"驚嚇、受驚"},"scaring":{"pos":"v.","zh":"正在嚇唬、受驚中"},"scary":{"pos":"adj.","zh":"可怕的、嚇人的"},"scientists":{"pos":"n.","zh":"科學家們（複數）"},"seat":{"pos":"n.","zh":"座位"},"secret":{"pos":"n./adj.","zh":"秘密；秘密的"},"seems":{"pos":"v.","zh":"似乎、好像（三單現）"},"selecting":{"pos":"v.","zh":"正在選擇、挑選"},"send":{"pos":"v.","zh":"寄送、發送"},"senior":{"pos":"adj./n.","zh":"高年級的、資深的；長者"},"seniors":{"pos":"n.","zh":"長者、高年級生（複數）"},"sent":{"pos":"v.","zh":"寄送了（send 的過去式）"},"separation":{"pos":"n.","zh":"分開、分離"},"serious":{"pos":"adj.","zh":"嚴肅的、嚴重的、認真的"},"severe":{"pos":"adj.","zh":"嚴重的、嚴厲的"},"sh":{"pos":"interj.","zh":"噓（要求安靜的感嘆詞）"},"shaved":{"pos":"v./adj.","zh":"剃了鬍子、刮過毛的；刨冰 (shaved ice)"},"shopping":{"pos":"n./v.","zh":"購物、買東西"},"shops":{"pos":"n./v.","zh":"商店（複數）；購物（三單現）"},"signals":{"pos":"n./v.","zh":"訊號、信號（複數）；發信號"},"similarly":{"pos":"adv.","zh":"同樣地、相似地"},"simply":{"pos":"adv.","zh":"簡單地、只不過、純粹"},"single":{"pos":"adj.","zh":"單一的、單身的"},"sir":{"pos":"n.","zh":"先生、長官"},"sisters":{"pos":"n.","zh":"姊妹們、護理師們（複數）"},"six":{"pos":"num.","zh":"六"},"skip":{"pos":"v.","zh":"略過、跳過"},"sleeping":{"pos":"v./adj.","zh":"正在睡覺；睡覺中的"},"sleeps":{"pos":"v.","zh":"睡覺（三單現）"},"slices":{"pos":"n./v.","zh":"片、薄片（複數）；切片"},"slides":{"pos":"n./v.","zh":"投影片、滑梯；滑動（複數）"},"slight":{"pos":"adj.","zh":"輕微的、微小的"},"snack":{"pos":"n.","zh":"點心、零食"},"snakes":{"pos":"n.","zh":"蛇（複數）"},"snow":{"pos":"n./v.","zh":"雪；下雪"},"soda":{"pos":"n.","zh":"汽水、碳酸飲料"},"sodas":{"pos":"n.","zh":"汽水（複數）"},"soft":{"pos":"adj.","zh":"柔軟的、柔和的"},"something":{"pos":"pron.","zh":"某事、某物"},"sore":{"pos":"adj.","zh":"痠痛的、痛處的"},"southern":{"pos":"adj.","zh":"南方的、南部的"},"span":{"pos":"n./v.","zh":"跨度、一段時間；跨越"},"speak":{"pos":"v.","zh":"說話、講語言"},"speaker":{"pos":"n.","zh":"演講者、揚聲器、喇叭"},"specials":{"pos":"n.","zh":"特價品、特色菜（複數）"},"specific":{"pos":"adj.","zh":"具體的、明確的、特定的"},"spiders":{"pos":"n.","zh":"蜘蛛（複數）"},"sports":{"pos":"n.","zh":"體育運動（複數）"},"springs":{"pos":"n.","zh":"泉水、溫泉、彈簧（複數）"},"standard":{"pos":"adj./n.","zh":"標準的；標準、準則"},"standing":{"pos":"v./adj.","zh":"站立中；站立的、長期的"},"starlight":{"pos":"n.","zh":"星光"},"starts":{"pos":"v.","zh":"開始（三單現）"},"status":{"pos":"n.","zh":"地位、狀態、情形"},"step":{"pos":"n./v.","zh":"步驟、腳步；邁步"},"stock":{"pos":"n.","zh":"庫存、股票、高湯"},"storm":{"pos":"n.","zh":"暴風雨、暴風雪"},"story":{"pos":"n.","zh":"故事、樓層"},"strictly":{"pos":"adv.","zh":"嚴格地、完全地"},"stronger":{"pos":"adj.","zh":"更強壯的、更強烈的"},"structure":{"pos":"n.","zh":"結構、構造、建築物"},"style":{"pos":"n.","zh":"風格、樣式"},"suggest":{"pos":"v.","zh":"建議、暗示"},"surprise":{"pos":"n./v.","zh":"驚喜、驚訝；使驚奇"},"survival":{"pos":"n.","zh":"生存、倖存"},"susan":{"pos":"n.","zh":"蘇珊（女子名）"},"sweetened":{"pos":"adj.","zh":"加糖的、變甜的"},"swim":{"pos":"v./n.","zh":"游泳"},"swollen":{"pos":"adj.","zh":"腫脹的、浮腫的"},"symbolic":{"pos":"adj.","zh":"象徵性的"},"symbols":{"pos":"n.","zh":"符號、象徵（複數）"},"tag":{"pos":"n.","zh":"標籤、標牌"},"takeout":{"pos":"n./adj.","zh":"外帶、外賣"},"talented":{"pos":"adj.","zh":"有天賦的、有才華的"},"talk":{"pos":"v./n.","zh":"談話、講話"},"talked":{"pos":"v.","zh":"談話了（過去式）"},"tall":{"pos":"adj.","zh":"高的、身材高大的"},"tastes":{"pos":"v./n.","zh":"嚐起來；滋味、品味（三單現）"},"td":{"pos":"n.","zh":"表格儲存格標籤 (HTML table data)"},"teach":{"pos":"v.","zh":"教導、教授"},"teaches":{"pos":"v.","zh":"教導（三單現）"},"teaching":{"pos":"n./v.","zh":"教學；正在教導"},"technology":{"pos":"n.","zh":"科技、技術"},"tells":{"pos":"v.","zh":"告訴、講述（三單現）"},"text":{"pos":"n.","zh":"課文、文字、簡訊"},"th":{"pos":"n.","zh":"表格標題列標籤 (HTML table header)"},"thank":{"pos":"v.","zh":"感謝、謝謝"},"these":{"pos":"pron./adj.","zh":"這些"},"thick":{"pos":"adj.","zh":"厚的、濃密的"},"thing":{"pos":"n.","zh":"事物、事情、東西"},"thinner":{"pos":"adj.","zh":"較薄的、較瘦的"},"thoughtful":{"pos":"adj.","zh":"體貼的、沉思的"},"throat":{"pos":"n.","zh":"喉嚨、咽喉"},"tiny":{"pos":"adj.","zh":"極小的、微小的"},"together":{"pos":"adv.","zh":"一起、共同"},"tom":{"pos":"n.","zh":"湯姆（男子名）"},"tr":{"pos":"n.","zh":"表格行標籤 (HTML table row)"},"tracy":{"pos":"n.","zh":"崔西（女子名）"},"traditionally":{"pos":"adv.","zh":"傳統上、依照傳統"},"transit":{"pos":"n.","zh":"運輸、過境、捷運"},"translating":{"pos":"v.","zh":"正在翻譯、轉換"},"traveling":{"pos":"v./n.","zh":"正在旅行；旅行"},"travels":{"pos":"v./n.","zh":"旅行（三單現/複數）"},"treat":{"pos":"v./n.","zh":"對待、治療、請客；款待"},"treatment":{"pos":"n.","zh":"治療、療法、待遇"},"trendy":{"pos":"adj.","zh":"時髦的、流行的"},"tuesday":{"pos":"n.","zh":"星期二"},"tunnel":{"pos":"n.","zh":"隧道、地道"},"tv":{"pos":"n.","zh":"電視 (television)"},"tve":{"pos":"abbr.","zh":"技職教育 (Technological and Vocational Education)"},"tw":{"pos":"abbr.","zh":"台灣 (Taiwan)"},"twists":{"pos":"v./n.","zh":"扭轉、曲折、轉折（三單現/複數）"},"ultimately":{"pos":"adv.","zh":"最終、終究"},"understand":{"pos":"v.","zh":"理解、明白"},"understanding":{"pos":"n./adj.","zh":"理解、諒解；具同理心的"},"unfamiliar":{"pos":"adj.","zh":"不熟悉的、生疏的"},"vary":{"pos":"v.","zh":"變化、不同、改變"},"ve":{"pos":"abbr.","zh":"已經（have 的縮寫，如 I've）"},"viewers":{"pos":"n.","zh":"觀眾、收看者（複數）"},"villages":{"pos":"n.","zh":"村莊、村落（複數）"},"viral":{"pos":"adj.","zh":"病毒性的；如病毒般瘋傳的 (go viral)"},"visitor":{"pos":"n.","zh":"訪客、遊客"},"vital":{"pos":"adj.","zh":"至關重要的、極其重要的、生命的"},"vocab":{"pos":"abbr.","zh":"單字、字彙 (vocabulary)"},"volunteers":{"pos":"n./v.","zh":"志工們、志願者（複數）"},"von":{"pos":"prep.","zh":"來自（德語貴族姓名介系詞）"},"wagging":{"pos":"v.","zh":"搖晃、搖擺（尾巴）"},"waiter":{"pos":"n.","zh":"服務生、侍者"},"waits":{"pos":"v.","zh":"等待（三單現）"},"way":{"pos":"n./adv.","zh":"道路、方法、方向；遠遠地"},"wealthy":{"pos":"adj.","zh":"富裕的、富有的"},"wearing":{"pos":"v.","zh":"穿著、戴著"},"wears":{"pos":"v.","zh":"穿著、戴著（三單現）"},"weeks":{"pos":"n.","zh":"星期、週（複數）"},"weight":{"pos":"n.","zh":"重量、體重"},"wh":{"pos":"abbr.","zh":"Wh-疑問詞（如 what, who, when）"},"width":{"pos":"n.","zh":"寬度"},"wish":{"pos":"v./n.","zh":"希望、祝願"},"wondered":{"pos":"v.","zh":"感到好奇、想知道（過去式）"},"woods":{"pos":"n.","zh":"樹林、森林（複數）"},"world":{"pos":"n.","zh":"世界、世間"},"worldwide":{"pos":"adj./adv.","zh":"世界各地的、全世界的"},"worries":{"pos":"v./n.","zh":"擔心、煩惱（三單現/複數）"},"wrapping":{"pos":"v./n.","zh":"包裹中、包裝紙"},"writes":{"pos":"v.","zh":"寫（write 的三單現）"},"written":{"pos":"adj./v.","zh":"書面的；寫了（過去分詞）"},"yellow":{"pos":"n./adj.","zh":"黃色；黃色的"},"young":{"pos":"adj.","zh":"年輕的、幼小的"},"scrolling":{"pos":"n./v.","zh":"捲動、滾動畫面"},"tappable":{"pos":"adj.","zh":"可點擊的、可觸控的"},"dc":{"pos":"n.","zh":"華盛頓特區 (Washington, D.C.) 或直流電"},"nrt":{"pos":"n.","zh":"東京成田國際機場代碼 (Narita Airport)"},"rm":{"pos":"abbr.","zh":"房間 (room) 的縮寫"},"rh":{"pos":"abbr.","zh":"相對濕度 (Relative Humidity)"},"1810s":{"pos":"n.","zh":"1810年代（19世紀初）"},"1880s":{"pos":"n.","zh":"1880年代（19世紀末）"},"administrators":{"pos":"n.","zh":"行政官員、管理者（複數）"},"administrator":{"pos":"n.","zh":"行政人員、管理者"},"ample":{"pos":"adj.","zh":"充足的、寬敞的"},"blank":{"pos":"adj./n.","zh":"空白的；空白處"},"calendar":{"pos":"n.","zh":"日曆、行事曆"},"capsule":{"pos":"n.","zh":"膠囊、時空膠囊"},"capture":{"pos":"v./n.","zh":"捕捉、記錄、俘獲"},"chaos":{"pos":"n.","zh":"混亂、紊亂"},"creative":{"pos":"adj.","zh":"有創意的、創造性的"},"decorate":{"pos":"v.","zh":"裝飾、佈置"},"diaries":{"pos":"n.","zh":"日記本、日誌（複數）"},"diary":{"pos":"n.","zh":"日記、日記本"},"distractions":{"pos":"n.","zh":"分心的事物、干擾（複數）"},"distraction":{"pos":"n.","zh":"分心、注意力分散"},"dotted":{"pos":"adj.","zh":"點陣的、有圓點圖案的"},"dot":{"pos":"n.","zh":"點、圓點"},"draw":{"pos":"v.","zh":"繪畫、描繪、拉"},"everyday":{"pos":"adj.","zh":"每天的、日常的"},"evolved":{"pos":"v.","zh":"演化、演變（過去式）"},"evolve":{"pos":"v.","zh":"逐漸發展、演變"},"expenses":{"pos":"n.","zh":"開銷、費用（複數）"},"expense":{"pos":"n.","zh":"費用、代價"},"fast-moving":{"pos":"adj.","zh":"節奏快的、瞬息萬變的"},"format":{"pos":"n./v.","zh":"格式、排版；編排格式"},"freedom":{"pos":"n.","zh":"自由、自主"},"goals":{"pos":"n.","zh":"目標、球門（複數）"},"goal":{"pos":"n.","zh":"目標、目的"},"gradually":{"pos":"adv.","zh":"逐漸地、漸漸地"},"greater":{"pos":"adj.","zh":"更大的、更強烈的"},"grids":{"pos":"n.","zh":"網格、表格方格（複數）"},"grid":{"pos":"n.","zh":"網格、方格、網狀結構"},"growth":{"pos":"n.","zh":"成長、增長"},"highlighters":{"pos":"n.","zh":"螢光筆（複數）"},"highlighter":{"pos":"n.","zh":"螢光筆"},"humble":{"pos":"adj.","zh":"質樸的、謙虛的"},"intention":{"pos":"n.","zh":"意圖、目的、自覺專注"},"japanese":{"pos":"adj./n.","zh":"日本的；日本語、日本人"},"journaling":{"pos":"n.","zh":"寫日記、生活日誌記錄"},"layouts":{"pos":"n.","zh":"版面配置、設計格局（複數）"},"layout":{"pos":"n.","zh":"版面、佈局"},"matches":{"pos":"v./n.","zh":"相配、相符（三單現）；比賽"},"match":{"pos":"v./n.","zh":"相配、相稱；比賽"},"mental":{"pos":"adj.","zh":"心理的、精神上的"},"merchants":{"pos":"n.","zh":"商人、批發商（複數）"},"merchant":{"pos":"n.","zh":"商人、批發商"},"milestones":{"pos":"n.","zh":"里程碑、重大轉折點（複數）"},"milestone":{"pos":"n.","zh":"里程碑"},"military":{"pos":"adj./n.","zh":"軍事的；軍隊"},"mindful":{"pos":"adj.","zh":"具正念的、留心的、專注當下的"},"offer":{"pos":"v./n.","zh":"提供、提出"},"organize":{"pos":"v.","zh":"組織、規劃、安排"},"organized":{"pos":"adj./v.","zh":"有條理的、井然有序的；組織"},"overview":{"pos":"n.","zh":"總覽、概觀"},"page":{"pos":"n.","zh":"頁面、一頁"},"pages":{"pos":"n.","zh":"頁面（複數）"},"personal":{"pos":"adj.","zh":"個人的、私人的"},"provide":{"pos":"v.","zh":"提供、給予"},"public":{"pos":"n./adj.","zh":"大眾、公眾；公開的"},"putting":{"pos":"v.","zh":"放置、書寫（put 的現在分詞）"},"reflect":{"pos":"v.","zh":"反思、深思、映出"},"relieve":{"pos":"v.","zh":"舒緩、減輕、救濟"},"rhythm":{"pos":"n.","zh":"節奏、步調、規律"},"routes":{"pos":"n.","zh":"路線、途徑（複數）"},"route":{"pos":"n.","zh":"路線、路程"},"serves":{"pos":"v.","zh":"充當、服務、作為（三單現）"},"serve":{"pos":"v.","zh":"服務、充當"},"sharpens":{"pos":"v.","zh":"磨練、使敏銳（三單現）"},"sharpen":{"pos":"v.","zh":"削尖、磨練"},"sheets":{"pos":"n.","zh":"紙張、床單（複數）"},"sheet":{"pos":"n.","zh":"一張（紙）、被單"},"simple":{"pos":"adj.","zh":"簡單的、樸素的"},"space":{"pos":"n.","zh":"空間、空位、太空"},"spread":{"pos":"v./n.","zh":"傳播、普及、展開"},"standardized":{"pos":"adj./v.","zh":"標準化的；使標準化"},"stickers":{"pos":"n.","zh":"貼紙（複數）"},"sticker":{"pos":"n.","zh":"貼紙"},"stress":{"pos":"n./v.","zh":"壓力、強調；強調"},"stubs":{"pos":"n.","zh":"票根、殘根（複數）"},"stub":{"pos":"n.","zh":"存根、票根"},"techou":{"pos":"n.","zh":"手帳（日式便攜記事日程本）"},"track":{"pos":"v./n.","zh":"追蹤、紀錄；跑道、軌道"},"transforms":{"pos":"v.","zh":"轉化、轉變（三單現）"},"transform":{"pos":"v.","zh":"徹底改變、轉化"},"travelers":{"pos":"n.","zh":"旅行者、旅人（複數）"},"traveler":{"pos":"n.","zh":"旅行者"},"upcoming":{"pos":"adj.","zh":"即將到來的"},"weekly":{"pos":"adj./adv.","zh":"每週的；每週"},"what's":{"pos":"phr.","zh":"什麼是（What is / What has 的縮寫）"},"disrupt":{"pos":"v.","zh":"擾亂、中斷、打亂"},"disrupts":{"pos":"v.","zh":"打亂、擾亂（三單現）"},"sonar":{"pos":"n.","zh":"聲納、聲波定位儀"},"emit":{"pos":"v.","zh":"散發、發出（光/聲/氣體）"},"intense":{"pos":"adj.","zh":"強烈的、劇烈的"},"blasts":{"pos":"n.","zh":"爆炸、陣風、巨響（複數）"},"mammals":{"pos":"n.","zh":"哺乳類動物（複數）"},"mammal":{"pos":"n.","zh":"哺乳動物"},"corridor":{"pos":"n.","zh":"走廊、通道、航道"},"corridors":{"pos":"n.","zh":"航道、走廊（複數）"},"rooftop":{"pos":"n.","zh":"屋頂、天台"},"rooftops":{"pos":"n.","zh":"屋頂（複數）"},"emissions":{"pos":"n.","zh":"排放物、排放（複數）"},"emission":{"pos":"n.","zh":"排放、散發"},"ethiopian":{"pos":"adj./n.","zh":"衣索比亞的；衣索比亞人"},"herder":{"pos":"n.","zh":"牧人、放牧者"},"ramen":{"pos":"n.","zh":"拉麵"},"revolutionized":{"pos":"v.","zh":"徹底變革、革新（過去式）"},"revolutionize":{"pos":"v.","zh":"徹底改變、變革"},"cultivation":{"pos":"n.","zh":"耕作、栽培、培育"},"peninsula":{"pos":"n.","zh":"半島"},"autonomous":{"pos":"adj.","zh":"自主的、自動駕駛的"},"experimenting":{"pos":"v.","zh":"進行實驗中"},"deliveries":{"pos":"n.","zh":"運送、投遞（複數）"},"delivery":{"pos":"n.","zh":"遞送、運送、交貨"},"drones":{"pos":"n.","zh":"無人機（複數）"},"resident":{"pos":"n.","zh":"居民"},"eliminating":{"pos":"v.","zh":"消除、淘汰中"},"eliminate":{"pos":"v.","zh":"消除、排除"},"foster":{"pos":"v.","zh":"促進、培養、撫育"},"fosters":{"pos":"v.","zh":"促進、培養（三單現）"},"connections":{"pos":"n.","zh":"連結、關係（複數）"},"connection":{"pos":"n.","zh":"連結、關聯"},"nourishes":{"pos":"v.","zh":"滋養、養育（三單現）"},"nourish":{"pos":"v.","zh":"滋養、懷有"},"spirit":{"pos":"n.","zh":"精神、心靈、氣魄"},"barren":{"pos":"adj.","zh":"貧瘠的、荒蕪的"},"berries":{"pos":"n.","zh":"漿果、果實（複數）"},"berry":{"pos":"n.","zh":"漿果"},"energetic":{"pos":"adj.","zh":"精力充沛的、充滿活力的"},"traders":{"pos":"n.","zh":"商人、貿易商（複數）"},"trader":{"pos":"n.","zh":"商人"},"arabian":{"pos":"adj./n.","zh":"阿拉伯的；阿拉伯人"},"post-war":{"pos":"adj.","zh":"戰後的"},"failed":{"pos":"adj./v.","zh":"失敗的；失敗（過去式）"},"experiments":{"pos":"n.","zh":"實驗（複數）"},"successfully":{"pos":"adv.","zh":"成功地"},"pedals":{"pos":"n.","zh":"踏板（複數）"},"pedal":{"pos":"n./v.","zh":"踏板；踩踏板"},"earliest":{"pos":"adj.","zh":"最早的"},"vehicle":{"pos":"n.","zh":"車輛、交通工具"},"planner":{"pos":"n.","zh":"日程本、日誌、企劃者、規劃師"},"planners":{"pos":"n.","zh":"日程本、日誌、規劃師（複數）"},"washi":{"pos":"n.","zh":"和紙、日式紙膠帶（特指和紙製成之膠帶）"},"tape":{"pos":"n.","zh":"膠帶、磁帶"},"uk":{"pos":"n.","zh":"英國（The United Kingdom）"},"goods":{"pos":"n.","zh":"商品、貨物（複數名詞）"},"stamps":{"pos":"n.","zh":"印章、郵票（複數）"},"stamp":{"pos":"n.","zh":"印章、郵票、蓋章"},"welcomes":{"pos":"v.","zh":"歡迎、欣然接納（三單）"},"creativity":{"pos":"n.","zh":"創意、創造力"},"freely":{"pos":"adv.","zh":"自由地、無拘無束地"},"flexible":{"pos":"adj.","zh":"有彈性的、靈活的"},"small":{"pos":"adj.","zh":"小的、小型輕便的"},"carried":{"pos":"v.","zh":"隨身攜帶、攜帶（過去式）"},"later":{"pos":"adv.","zh":"後來、隨後、稍後"},"listing":{"pos":"v.","zh":"列出、列舉（現在分詞/動名詞）"},"list":{"pos":"v.","zh":"列出、列清單"},"easy":{"pos":"adj.","zh":"容易的、輕鬆的"},"set":{"pos":"v.","zh":"設定、訂立（目標、計畫）"}};
+
+    const ALL_TVE_PROOFS = [{"id": "tve-113-2", "year": "113 統測", "title": "113 統測閱讀測驗 Q31~35：《無人機配送技術的發展演進》", "tag": "113 統測最新真題 · 技巧 01 年代標記與時態演進佐證", "badgeClass": "badge-purple", "summary": "In the 2010s (早期起源) ➔ In 2016 (里程碑事件) ➔ Today (現代普及)", "sentences": [{"id": "tve-113-2-s1", "text": "In the 2010s, global tech companies began experimenting with drones for small package deliveries.", "clueType": "clue-timeline", "clueTag": "⏳ 策略01：過去年代 (In the 2010s)", "clueDesc": "【時間線起點】In the 2010s 搭配過去式 began experimenting，清楚標註無人機物流的起源試驗階段。", "clueZh": "在 2010 年代，全球科技巨頭開始嘗試將無人機應用於小型包裹的運送。"}, {"id": "tve-113-2-s2", "text": "In 2016, the world's first fully autonomous commercial drone delivery was successfully completed in England.", "clueType": "clue-timeline", "clueTag": "⏳ 策略01：具體年份 (In 2016)", "clueDesc": "時間推進至具體年份 In 2016，過去式 was successfully completed 交代關鍵突破里程碑。", "clueZh": "2016 年，全球首例全自動商業無人機外送在英國成功完成。"}, {"id": "tve-113-2-s3", "text": "Today, autonomous delivery drones operate in dozens of countries, transporting critical medical supplies in minutes.", "clueType": "clue-conclusion", "clueTag": "🌸 策略01：現在式總結 (Today)", "clueDesc": "由過去年份收攏至 Today，時態轉回現在簡單式 operate，完成科技演進史的敘事閉環。", "clueZh": "時至今日，自主配送無人機已在數十個國家運作，能在數分鐘內運送緊急醫療物資。"}], "strategyAnalysis": "💡 統測名師策略解密：113 統測這道題組直接驗證了【技巧 01】：看見年代時間詞 (In the 2010s ➔ In 2016 ➔ Today) 搭配動詞時態流動，文章脈絡必定是按「時間順序 (Chronological Order)」介紹科技演變，主旨題立刻鎖定 evolution / history！"}, {"id": "tve-111", "year": "111 統測", "title": "111 統測閱讀測驗 Q26~30：《咖啡豆的起源與跨世紀傳播》", "tag": "111 統測真題 · 技巧 01 跨世紀時間軸佐證", "badgeClass": "badge-purple", "summary": "in the 9th century ➔ in the 15th century ➔ Later in the 17th century", "sentences": [{"id": "tve-111-s1", "text": "According to legend, in the 9th century, an Ethiopian goat herder first noticed his goats becoming energetic after eating red berries.", "clueType": "clue-timeline", "clueTag": "⏳ 策略01：時間起點 (9th century)", "clueDesc": "【古代起源】in the 9th century 與 noticed 標記咖啡起源傳說。", "clueZh": "相傳在西元 9 世紀，一位衣索比亞牧羊人首次注意到他的山羊在吃了紅色漿果後變得異常精力充沛。"}, {"id": "tve-111-s2", "text": "In the 15th century, coffee cultivation began in the Arabian Peninsula, where beans were roasted for the first time.", "clueType": "clue-timeline", "clueTag": "⏳ 策略01：年代推進 (15th century)", "clueDesc": "時間推進至 15 世紀，動詞 began 標誌人工種植與烘焙技術的誕生。", "clueZh": "到了 15 世紀，咖啡種植在阿拉伯半島展開，人們在此首次烘焙咖啡豆。"}, {"id": "tve-111-s3", "text": "Later in the 17th century, European traders introduced coffee to the Western world, sparking a global beverage culture.", "clueType": "clue-timeline", "clueTag": "⏳ 策略01：全球擴散 (17th century)", "clueDesc": "時間推進至 17 世紀，動詞 introduced 描述咖啡走向全球化。", "clueZh": "隨後在 17 世紀，歐洲商人將咖啡引入西方世界，掀起了一場全球性的飲品文化。"}], "strategyAnalysis": "💡 統測名師策略解密：111 統測本題直接以『時間世紀 (9th ➔ 15th ➔ 17th century)』串聯全文。題目考出『依據文章，下列哪一事件最先發生？』，學生只要依據時間軸定位，根本無需通篇硬讀！"}, {"id": "tve-110", "year": "110 統測", "title": "110 統測閱讀測驗 Q31~35：《泡麵的誕生與全球食品革命》", "tag": "110 統測真題 · 技巧 01 年代發明篇章佐證", "badgeClass": "badge-purple", "summary": "In the late 1950s ➔ In 1958 (發明) ➔ Later in 1971 (杯麵革命)", "sentences": [{"id": "tve-110-s1", "text": "In the late 1950s, Momofuku Ando noticed hungry people waiting in long lines for hot noodles in post-war Japan.", "clueType": "clue-timeline", "clueTag": "⏳ 策略01：歷史背景 (late 1950s)", "clueDesc": "In the late 1950s 與 noticed 說明戰後物資匱乏的發明背景契機。", "clueZh": "在 1950 年代後期，安藤百福注意到在戰後日本，飢餓的人們頂著寒風大排長龍等待一碗熱麵。"}, {"id": "tve-110-s2", "text": "In 1958, after countless failed experiments in his backyard shed, he successfully invented the world's first instant ramen.", "clueType": "clue-timeline", "clueTag": "⏳ 策略01：誕生年份 (In 1958)", "clueDesc": "In 1958 搭配 successfully invented，確立全球第一包泡麵誕生年份。", "clueZh": "1958 年，在後院小屋歷經無數次失敗實驗後，他終於成功發明了世界上第一包速食拉麵。"}, {"id": "tve-110-s3", "text": "Later in 1971, he created Cup Noodles, which revolutionized the global food industry and fed billions.", "clueType": "clue-timeline", "clueTag": "⏳ 策略01：劃時代演進 (In 1971)", "clueDesc": "時間跨入 1971 年，created Cup Noodles 交代杯麵如何掀起跨國食品革命。", "clueZh": "隨後在 1971 年，他創作出『杯麵』，徹底顛覆了全球食品產業並養活了數十億人。"}], "strategyAnalysis": "💡 統測名師策略解密：110 統測這道題組正是標準的『發明與歷史演進』。文章第一段透過年代標記 (1950s ➔ 1958 ➔ 1971) 快速交代產品的疊代歷程，與 A+ 雜誌 Techou 第一段完全同構！"}, {"id": "tve-108", "year": "108 統測", "title": "108 統測閱讀測驗 Q26~30：《腳踏車的誕生與踏板演進》", "tag": "108 統測真題 · 技巧 01 經典年代題", "badgeClass": "badge-purple", "summary": "In the 1810s (早期原型) ➔ Later in the 1860s (踏板加入)", "sentences": [{"id": "tve-108-s1", "text": "In the 1810s, Karl von Drais invented the earliest two-wheeled running machine to help people travel faster.", "clueType": "clue-timeline", "clueTag": "⏳ 策略01：1810年代原型", "clueDesc": "與 A+ 雜誌手帳一模一樣的『In the 1810s』！標誌著腳踏車始祖雙輪奔跑機的發明。", "clueZh": "在 1810 年代，卡爾·馮·德萊斯發明了最早的雙輪『奔跑機』，以協助人們更迅速地旅行。"}, {"id": "tve-108-s2", "text": "Later in the 1860s, French inventors added pedals to the front wheel, making it much faster and more practical.", "clueType": "clue-timeline", "clueTag": "⏳ 策略01：1860年代改良", "clueDesc": "年代推進至 the 1860s，動詞 added pedals 交代腳踏車如何具備實用踏板功能。", "clueZh": "隨後在 1860 年代，法國發明家在前輪加裝了踏板，使其速度大增且更加實用。"}], "strategyAnalysis": "💡 統測名師策略解密：108 統測這題直接打臉死背單字的同學！考點線索直指『In the 1810s... Later in the 1860s...』，抓住時間年份便能秒殺題目詢問之發明演進史！"}];
+
+    const CLUE_DATABASE = {
+      "t1-1": {
+        text: "A techou is a small notebook for recording daily life.",
+        tag: "⏳ 技巧01：定義說明",
+        tagClass: "tag-timeline",
+        desc: "首句為手帳下定義：一本記錄日常生活的隨身小筆記本（recording daily life）。",
+        zh: "手帳是一本用來記錄日常生活的隨身小筆記本。"
+      },
+      "t1-2": {
+        text: "It dates back to the 1810s in the UK.",
+        tag: "⏳ 技巧01：年代起點 (1810s)",
+        tagClass: "tag-timeline",
+        desc: "出現過去年代 the 1810s，搭配片語 dates back to，宣告全段即將展開「歷史起源與演進過程」。",
+        zh: "它的歷史可追溯至 1810 年代的英國。"
+      },
+      "t1-3": {
+        text: "At that time, merchants carried small notebooks to record goods in stores.",
+        tag: "⏳ 技巧01：過去式 (carried)",
+        tagClass: "tag-timeline",
+        desc: "以 At that time 呼應 1810s，動詞使用過去式 carried 與 record，說明當時英國商人的使用目的（記商品庫存）。",
+        zh: "在當時，商人隨身攜帶小筆記本以記錄店鋪裡的商品庫存。"
+      },
+      "t1-4": {
+        text: "Around the 1880s, people in Japan began to use techou for daily notes.",
+        tag: "⏳ 技巧01：年代推進 (1880s)",
+        tagClass: "tag-timeline",
+        desc: "年代推進至 the 1880s，動詞用過去式 began，標示手帳演進的第二站：日本民眾開始普及於日常筆記。",
+        zh: "大約在 1880 年代，日本民眾開始使用手帳做日常筆記。"
+      },
+      "t1-5": {
+        text: "It soon became popular across Japan and later around the world!",
+        tag: "⏳ 技巧01：演進至今",
+        tagClass: "tag-timeline",
+        desc: "以 became 與 later around the world 收尾，完成跨世紀、跨地域的歷史演進閉環。",
+        zh: "它很快在日本各地風行起來，隨後更風靡全世界！"
+      },
+      "t2-1": {
+        text: "A techou is helpful in many ways.",
+        tag: "🍔 技巧02：頂層麵包 (主題句)",
+        tagClass: "tag-topic",
+        desc: "標準主題句（Top Bun）：僅提約略方向（在許多方面有幫助），不寫死細節，引導讀者閱讀後續支持細節。",
+        zh: "手帳在許多方面都很有幫助。"
+      },
+      "t2-2": {
+        text: "By listing things to do, people can make good use of time.",
+        tag: "🍔 技巧02：生菜細節 (善用時間)",
+        tagClass: "tag-details",
+        desc: "支持細節 1：透過列出待辦事項（listing things to do），讓大家善用時間，具體支撐 helpful in many ways。",
+        zh: "透過列出待辦事項，人們能夠妥善運用時間。"
+      },
+      "t2-3": {
+        text: "Habits like sleep hours or exercise also become easy to track.",
+        tag: "🍔 技巧02：生菜細節 (追蹤習慣)",
+        tagClass: "tag-details",
+        desc: "支持細節 2：睡眠與運動等習慣追蹤，搭配轉折詞 also 進行同向遞進補充。",
+        zh: "像睡眠時數或運動這類的生活習慣也變得容易追蹤。"
+      },
+      "t2-4": {
+        text: "What's more, it helps people set plans and reach goals step by step.",
+        tag: "🍔 技巧02：肉排細節 (達成目標)",
+        tagClass: "tag-details",
+        desc: "支持細節 3：轉折詞 What's more 進一步提升層次，制定計畫並逐步達成目標。",
+        zh: "更甚者，它能幫助人們制定計畫並按部就班達成目標。"
+      },
+      "t2-5": {
+        text: "In fact, a techou welcomes all kinds of notes!",
+        tag: "🍔 技巧02：底層麵包 (結論句)",
+        tagClass: "tag-conclusion",
+        desc: "底層麵包（Bottom Bun）：以 In fact 總結收斂，宣告手帳歡迎各種筆記，完美呼應主題句。",
+        zh: "事實上，手帳歡迎記錄各種類型的筆記！"
+      },
+      "t2-6": {
+        text: "To make your own techou, start by choosing a page style.",
+        tag: "🍔 技巧02：第3段主題句",
+        tagClass: "tag-topic",
+        desc: "第 3 段主題句：指出打造手帳的第一步就是挑選內頁格式（start by choosing a page style），確立全段展開脈絡。",
+        zh: "要製作你自己的手帳，首先從挑選頁面格式開始。"
+      },
+      "t2-7": {
+        text: "Monthly or weekly pages are good choices for planning time.",
+        tag: "🍔 技巧02：支持細節 (月/週計畫)",
+        tagClass: "tag-details",
+        desc: "支持細節：具體介紹月計畫與週計畫適合規劃時間。",
+        zh: "月計畫或週計畫頁面是規劃時間的好選擇。"
+      },
+      "t2-8": {
+        text: "For a flexible style, you can pick blank or grid pages.",
+        tag: "🍔 技巧02：支持細節 (空白/方格)",
+        tagClass: "tag-details",
+        desc: "支持細節：介紹空白頁與方格頁適合自由創作。",
+        zh: "若想要有彈性的風格，你可以選擇空白頁或方格頁。"
+      },
+      "t2-9": {
+        text: "Today, techou books usually come with both, so you can plan and write freely.",
+        tag: "🍔 技巧02：第3段總結",
+        tagClass: "tag-conclusion",
+        desc: "總結現代手帳通常兼具兩者，讓人自由規劃與書寫。",
+        zh: "如今，手帳本通常兩者兼具，讓你能自由規劃與書寫。"
+      },
+      "t3-1": {
+        text: "A techou is not just for writing—it's also a place to show creativity.",
+        tag: "🔗 技巧03：not just... also",
+        tagClass: "tag-transitions",
+        desc: "雙重強調 not just... also（手帳不只用來書寫，更是展現創意的天地），閱讀重心落在 also 後方。",
+        zh: "手帳不只是用來書寫——它也是展現創意的好地方。"
+      },
+      "t3-2": {
+        text: "For example, different pen colors help organize things to do by importance.",
+        tag: "🔗 技巧03：For example (舉例印證)",
+        tagClass: "tag-transitions",
+        desc: "轉折詞 For example 引導具體實例，以不同筆色依重要性安排事項，證明前句的「展現創意與靈活」。",
+        zh: "舉例來說，不同顏色的原子筆有助於依重要性安排待辦事項。"
+      },
+      "t3-3": {
+        text: "You can decorate your techou with stickers, stamps, or washi tape.",
+        tag: "🔗 技巧03：細節支持 (裝飾素材)",
+        tagClass: "tag-transitions",
+        desc: "列出貼紙、印章、紙膠帶等具體裝飾手法。",
+        zh: "你可以用貼紙、印章或紙膠帶來裝飾你的手帳。"
+      },
+      "t3-4": {
+        text: "You can also put photos or movie tickets inside to remember special moments.",
+        tag: "🔗 技巧03：轉折詞 also (補充紀念)",
+        tagClass: "tag-transitions",
+        desc: "轉折詞 also 補充第二種創意玩法：放入照片或電影票根留存美好回憶。",
+        zh: "你也可以把照片或電影票根放進去以紀念特別時刻。"
+      },
+      "t3-5": {
+        text: "With all these ideas, why not start making your own techou today?",
+        tag: "🔗 技巧03：問句收斂",
+        tagClass: "tag-transitions",
+        desc: "以反詰問句鼓勵讀者立即行動，收斂全篇意旨。",
+        zh: "有了這些好點子，何不今天就開始打造你自己的手帳呢？"
+      }
+    };
+
+    // TVE Proofs clues database
+    ALL_TVE_PROOFS.forEach(p => {
+      p.sentences.forEach(s => {
+        CLUE_DATABASE[s.id] = {
+          tag: s.tag,
+          desc: s.desc,
+          zh: s.zh,
+          sentence: s.text
+        };
+      });
+    });
+
+    let cluesVisibleState = {
+      'strat1': false,
+      'tve': false
+    };
+
+    let activeHudWord = null;
+    let currentClueId = null;
+    let ttsRate = 0.88;
+    let tveLoadedCount = ALL_TVE_PROOFS.length;
+
+    // Layout Mode (Mobile / Desktop Split-Pane)
+    function setLayoutMode(mode) {
+      const b = document.body;
+      const btnM = document.getElementById('btn-mode-mobile');
+      const btnD = document.getElementById('btn-mode-desktop');
+      if (mode === 'desktop') {
+        b.classList.remove('mode-mobile');
+        b.classList.add('mode-desktop');
+        if (btnD) btnD.classList.add('active');
+        if (btnM) btnM.classList.remove('active');
+      } else {
+        b.classList.remove('mode-desktop');
+        b.classList.add('mode-mobile');
+        if (btnM) btnM.classList.add('active');
+        if (btnD) btnD.classList.remove('active');
+      }
+      localStorage.setItem('strat_layout_mode', mode);
+    }
+
+    // Font Scaling System
+    function setFontSize(level) {
+      const b = document.body;
+      b.classList.remove('font-a', 'font-a-plus', 'font-a-2plus', 'font-a-3plus');
+      b.classList.add('font-' + level);
+      document.querySelectorAll('.tool-group button').forEach(btn => {
+        if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes("'" + level + "'")) {
+          btn.classList.add('active');
+        } else if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes("setFontSize")) {
+          btn.classList.remove('active');
+        }
+      });
+      localStorage.setItem('strat_font_level', level);
+    }
+
+    // TTS Rate Selector
+    function setTtsRate(rate, btn) {
+      ttsRate = rate;
+      document.querySelectorAll('.tool-group button').forEach(b => {
+        if (b.getAttribute('onclick') && b.getAttribute('onclick').includes('setTtsRate')) {
+          b.classList.remove('active');
+        }
+      });
+      if (btn) {
+        btn.classList.add('active');
+      } else {
+        document.querySelectorAll('.tool-group button').forEach(b => {
+          if (b.getAttribute('onclick') && b.getAttribute('onclick').includes(String(rate))) {
+            b.classList.add('active');
+          }
+        });
+      }
+      localStorage.setItem('strat_tts_rate', rate);
+    }
+
+    // Clue Highlighting Toggle
+    function toggleClues(targetViewId) {
+      cluesVisibleState[targetViewId] = !cluesVisibleState[targetViewId];
+      const isVisible = cluesVisibleState[targetViewId];
+
+      const btn = document.getElementById('btn-toggle-' + targetViewId);
+      if (btn) {
+        if (isVisible) {
+          btn.classList.add('active');
+          btn.innerHTML = '💡 考點視覺線索：已開啟';
+        } else {
+          btn.classList.remove('active');
+          btn.innerHTML = '💡 考點視覺線索：關閉中（點擊開啟）';
+        }
+      }
+
+      if (targetViewId === 'tve') {
+        const container = document.getElementById('tveProofsList');
+        if (container) {
+          container.querySelectorAll('.tve-passage-text').forEach(p => {
+            if (isVisible) p.classList.add('clues-on');
+            else p.classList.remove('clues-on');
+          });
+        }
+      } else {
+        const passage = document.getElementById('passage-' + targetViewId);
+        if (passage) {
+          if (isVisible) passage.classList.add('clues-on');
+          else passage.classList.remove('clues-on');
+        }
+      }
+    }
+
+    // Hamburger Model Interaction (for Strat 2)
+    function hamburgerSelect(layerId, targetClueId) {
+      document.querySelectorAll('.burger-layer').forEach(l => l.classList.remove('active'));
+      const layerEl = document.getElementById(layerId);
+      if (layerEl) layerEl.classList.add('active');
+
+      if (!cluesVisibleState['strat2']) {
+        toggleClues('strat2');
+      }
+
+      openClue(targetClueId);
+    }
+
+    function jumpToClue(clueId) {
+      openClue(clueId);
+    }
+
+    function openClue(clueId) {
+      currentClueId = clueId;
+      const data = CLUE_DATABASE[clueId];
+      if (!data) return;
+
+      const popover = document.getElementById('cluePopover');
+      const tagEl = document.getElementById('popoverTag');
+      const descEl = document.getElementById('popoverDesc');
+      const zhEl = document.getElementById('popoverZh');
+
+      if (tagEl) tagEl.textContent = data.tag;
+      if (descEl) descEl.innerHTML = data.desc;
+      if (zhEl) zhEl.textContent = data.zh;
+
+      if (popover) popover.classList.add('show');
+
+      const targetSpan = document.querySelector('[data-clue="' + clueId + '"]');
+      if (targetSpan) {
+        targetSpan.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        targetSpan.classList.remove('highlight-pulse');
+        void targetSpan.offsetWidth;
+        targetSpan.classList.add('highlight-pulse');
+        setTimeout(() => {
+          targetSpan.classList.remove('highlight-pulse');
+        }, 2000);
+      }
+    }
+
+    function closePopover() {
+      const popover = document.getElementById('cluePopover');
+      if (popover) popover.classList.remove('show');
+    }
+
+    // Tap-to-Lookup HUD
+    function bindTapWords() {
+      document.querySelectorAll('.tap-word').forEach(el => {
+        if (!el.dataset.tapped) {
+          el.dataset.tapped = "true";
+          el.addEventListener('click', handleWordClick);
+        }
+      });
+    }
+
+    function handleWordClick(e) {
+      e.stopPropagation();
+      const rawText = this.innerText.trim();
+      const cleanWord = rawText.toLowerCase().replace(/[^a-z'-]/g, '');
+      if (cleanWord) {
+        lookupWord(cleanWord, this);
+      }
+    }
+
+    function lookupWord(word, element) {
+      activeHudWord = word;
+      const hud = document.getElementById('wordHud');
+      const wEl = document.getElementById('hudWord');
+      const pEl = document.getElementById('hudPos');
+      const mEl = document.getElementById('hudMeaning');
+
+      const info = VOCAB_DICT[word.toLowerCase()] || { pos: "單詞", zh: "點擊聆聽真人發音" };
+
+      if (wEl) wEl.textContent = word;
+      if (pEl) pEl.textContent = info.pos || "單詞";
+      if (mEl) mEl.textContent = info.zh || "暫無中文";
+
+      document.querySelectorAll('.tap-word.active-word').forEach(w => w.classList.remove('active-word'));
+      if (element) element.classList.add('active-word');
+
+      if (hud) hud.classList.add('show');
+      speakText(word, ttsRate);
+    }
+
+    function closeWordHud() {
+      const hud = document.getElementById('wordHud');
+      if (hud) hud.classList.remove('show');
+      document.querySelectorAll('.tap-word.active-word').forEach(w => w.classList.remove('active-word'));
+      activeHudWord = null;
+    }
+
+    // Speech Synthesis
+    function speakText(text, rate) {
+      if (!('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'en-US';
+      u.rate = rate || ttsRate;
+      const voices = window.speechSynthesis.getVoices();
+      const usVoice = voices.find(v => (v.lang === 'en-US' || v.lang === 'en_US') && (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Samantha') || v.name.includes('Jenny') || v.name.includes('Siri')));
+      if (usVoice) u.voice = usVoice;
+      window.speechSynthesis.speak(u);
+    }
+
+    function speakCurrentHudWord() {
+      if (activeHudWord) speakText(activeHudWord, ttsRate);
+    }
+
+    function speakCurrentPopoverSentence() {
+      if (currentClueId && CLUE_DATABASE[currentClueId]) {
+        const text = CLUE_DATABASE[currentClueId].sentence || "";
+        if (text) speakText(text, ttsRate);
+      }
+    }
+
+    function wrapWordsWithTap(text) {
+      if (!text) return '';
+      const parts = text.split(/(\s+|[.,!?;:()"]+)/);
+      return parts.map(part => {
+        if (/^[A-Za-z'-]+$/.test(part)) {
+          return '<span class="tap-word">' + part + '</span>';
+        }
+        return part;
+      }).join('');
+    }
+
+    function renderTveProofs() {
+      const container = document.getElementById('tveProofsList');
+      if (!container) return;
+
+      const proofsToShow = ALL_TVE_PROOFS;
+
+      let html = '';
+      proofsToShow.forEach((proof) => {
+        let sentencesHtml = '';
+        proof.sentences.forEach(s => {
+          const wrapped = wrapWordsWithTap(s.text);
+          sentencesHtml += '<span class="p-sentence ' + s.clueType + '" data-clue="' + s.id + '" onclick="openClue(\'' + s.id + '\')">' + wrapped + ' </span>';
+        });
+
+        html += `
+          <div class="tve-proof-box">
+            <div class="tve-box-header">
+              <span class="tve-exam-badge">${proof.year} 統測真題</span>
+              <span class="tve-strategy-tag">${proof.tag}</span>
+            </div>
+            <div style="font-size:15px; font-weight:800; color:#0f172a; margin-bottom:8px;">${proof.title}</div>
+            <div class="tve-passage-text ${cluesVisibleState['tve'] ? 'clues-on' : ''}">${sentencesHtml}</div>
+            <div class="tve-analysis-box">${proof.strategyAnalysis}</div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+      bindTapWords();
+    }
+
+    // Quiz Check
+    function checkAnswer(btn, isCorrect, correctChar, expDrawerId) {
+      const parent = btn.closest('.quiz-options');
+      if (!parent) return;
+
+      if (parent.dataset.answered) return;
+      parent.dataset.answered = "true";
+
+      const allBtns = parent.querySelectorAll('.quiz-opt-btn');
+      allBtns.forEach(b => {
+        b.disabled = true;
+        if (b.innerText.trim().startsWith(correctChar + '.')) {
+          b.classList.add('correct');
+        }
+      });
+
+      if (!isCorrect) {
+        btn.classList.add('wrong');
+      }
+
+      const drawer = document.getElementById(expDrawerId);
+      if (drawer) {
+        drawer.classList.add('open');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedMode = localStorage.getItem('strat_layout_mode') || (window.innerWidth >= 1024 ? 'desktop' : 'mobile');
+      setLayoutMode(savedMode);
+
+      const savedFont = localStorage.getItem('strat_font_level') || 'a';
+      setFontSize(savedFont);
+
+      const savedRate = localStorage.getItem('strat_tts_rate');
+      if (savedRate) setTtsRate(parseFloat(savedRate));
+
+      bindTapWords();
+      renderTveProofs();
+    });
+  </script>
+</body>
+</html>
